@@ -23,7 +23,6 @@
 #include "openturns/Matrix.hxx"
 #include "openturns/SquareMatrix.hxx"
 #include "openturns/SymmetricMatrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/HermitianMatrix.hxx"
 
 BEGIN_NAMESPACE_OPENTURNS
@@ -72,6 +71,13 @@ TriangularMatrix::TriangularMatrix(const MatrixImplementation & i,
   , hasBeenTriangularized_(false)
 {
   // Nothing to do
+}
+
+
+/** Create identity matrix as CovarianceMatrix */
+TriangularMatrix TriangularMatrix::identityMatrix(const UnsignedInteger dimension)
+{
+  return TriangularMatrix(MatrixImplementation::identityMatrix(dimension));
 }
 
 
@@ -214,12 +220,6 @@ SquareMatrix TriangularMatrix::operator * (const SymmetricMatrix & m) const
 {
   char uplo(isLowerTriangular() ? 'L' : 'U');
   return getImplementation()->triangularProd(*m.getImplementation(), 'L', uplo );
-}
-
-/*  IdentityMatrix multiplications */
-TriangularMatrix TriangularMatrix::operator * (const IdentityMatrix & ) const
-{
-  return (*this);
 }
 
 /* Multiplication with a ScalarCollection (must have consistent dimensions) */

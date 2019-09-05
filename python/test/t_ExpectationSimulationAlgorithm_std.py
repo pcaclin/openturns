@@ -27,7 +27,7 @@ dim = model.getInputDimension()
 # We create a normal distribution point of dimension 1
 mean = [50.0, 1.0, 10.0, 5.0]  # E, F, L, I
 sigma = [1.0] * dim
-R = ot.IdentityMatrix(dim)
+R = ot.CorrelationMatrix.identityMatrix(dim)
 myDistribution = ot.Normal(mean, sigma, R)
 
 # We create a 'usual' RandomVector from the Distribution

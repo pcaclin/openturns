@@ -24,7 +24,6 @@
 #include "openturns/StandardEvent.hxx"
 #include "openturns/Function.hxx"
 #include "openturns/SymmetricTensor.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/Matrix.hxx"
 #include "openturns/Log.hxx"
 #include "openturns/Normal.hxx"
@@ -117,7 +116,7 @@ void SORMResult::computeSortedCurvatures() const
     for (UnsignedInteger j = 0; j < dimension; ++j)
       kroneckerUnitGradientLimitStateFunction(i, j) = unitGradientLimitStateFunction[i] * unitGradientLimitStateFunction[j];
   /* W = (uGrad.uGrad^t -Id) * Hess(g) */
-  const SquareMatrix id = IdentityMatrix(dimension);
+  const SquareMatrix id(MatrixImplementation::identityMatrix(dimension));
   const SquareMatrix::ComplexCollection eigenValues(((kroneckerUnitGradientLimitStateFunction - id) * hessianLimitStateFunction_).computeEigenValues());
   Point realEigenValues(dimension);
   for (UnsignedInteger i = 0; i < dimension; ++i) realEigenValues[i] = eigenValues[i].real();

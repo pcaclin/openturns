@@ -28,7 +28,6 @@ BEGIN_NAMESPACE_OPENTURNS
 
 
 class CovarianceMatrix;
-class IdentityMatrix;
 class SquareMatrix;
 class SymmetricMatrix;
 class Sample;
@@ -87,6 +86,9 @@ public:
   /** Constructor from symmetric matrix */
   Matrix(const SymmetricMatrix & symmetric);
 
+  /** Constructor for identity matrix */
+  static Matrix identityMatrix(const UnsignedInteger dimension);
+  
   /** Set small elements to zero */
   virtual Matrix clean(const Scalar threshold) const;
 
@@ -137,7 +139,6 @@ public:
   /** Matrix multiplications (must have consistent dimensions) */
   Matrix operator * (const Matrix & m) const;
   Matrix operator * (const SymmetricMatrix & m) const;
-  Matrix operator * (const IdentityMatrix & m) const;
 
   /** Multiplication with a Sample (must have consistent dimensions) */
   Sample operator * (const Sample & sample) const;
@@ -178,6 +179,9 @@ public:
 
   /** Empty returns true if there is no element in the matrix */
   Bool isEmpty() const;
+  
+  /** Check if matrix is identity */
+  Bool isIdentity() const;
 
   // These functions are only intended to be used by SWIG, DO NOT use them for your own purpose !
   // INTENTIONALY NOT DOCUMENTED

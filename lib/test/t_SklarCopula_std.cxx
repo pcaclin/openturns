@@ -35,7 +35,7 @@ int main(int, char *[])
     // Instanciate one distribution object
     UnsignedInteger dim = 3;
 
-    CorrelationMatrix R = IdentityMatrix(dim);
+    CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
     for(UnsignedInteger i = 0; i < dim - 1; i++) R(i, i + 1) = 0.25;
     Point mean(dim);
     mean[0] = 1.0;

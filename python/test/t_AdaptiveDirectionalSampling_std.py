@@ -13,7 +13,7 @@ function = ot.SymbolicFunction(
 # create a distribution
 distribution = ot.Normal(
     [50., 1.0, 10.0, 5.0], [1.0] * dim,
-    ot.IdentityMatrix(dim))
+    ot.CorrelationMatrix.identityMatrix(dim))
 vect = ot.RandomVector(distribution)
 composite = ot.CompositeRandomVector(function, vect)
 event = ot.Event(composite, ot.Less(), -3.0)

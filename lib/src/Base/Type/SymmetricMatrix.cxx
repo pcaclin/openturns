@@ -78,6 +78,12 @@ SymmetricMatrix::SymmetricMatrix(const UnsignedInteger dim,
   // Nothing to do
 }
 
+/** Create identity matrix as CovarianceMatrix */
+SymmetricMatrix SymmetricMatrix::identityMatrix(const UnsignedInteger dimension)
+{
+  return SymmetricMatrix(MatrixImplementation::identityMatrix(dimension));
+}
+
 
 /* Check if the internal representation is actually symmetric */
 void SymmetricMatrix::checkSymmetry() const
@@ -206,12 +212,6 @@ SquareMatrix SymmetricMatrix::operator * (const SymmetricMatrix & m) const
   m.checkSymmetry();
   return Implementation((getImplementation()->symProd(*(m.getImplementation()), 'L') ).clone());
 }
-
-SymmetricMatrix SymmetricMatrix::operator * (const IdentityMatrix & ) const
-{
-  return *this;
-}
-
 
 /* Multiplication with a Point (must have consistent dimensions) */
 Point SymmetricMatrix::operator * (const Point & pt) const

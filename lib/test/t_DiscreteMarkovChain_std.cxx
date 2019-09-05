@@ -20,7 +20,6 @@
  */
 #include "openturns/OT.hxx"
 #include "openturns/OTtestcode.hxx"
-#include "openturns/IdentityMatrix.hxx"
 
 using namespace OT;
 using namespace OT::Test;
@@ -42,7 +41,7 @@ int main(int, char *[])
     RegularGrid timeGrid(Tmin, deltaT, N);
     
     /* Process creation from int and matrix */
-    DiscreteMarkovChain processIntSqMat(1, IdentityMatrix(2));
+    DiscreteMarkovChain processIntSqMat(1, SquareMatrix(MatrixImplementation::identityMatrix(2)));
     fullprint << "### Process from int + SquareMatrix constructor:" << std::endl << processIntSqMat << std::endl << std::endl;
     
     /* Process creation from default constructor */

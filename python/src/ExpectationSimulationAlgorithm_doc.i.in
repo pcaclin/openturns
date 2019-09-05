@@ -62,7 +62,7 @@ Examples
 >>> ot.RandomGenerator.SetSeed(0)
 >>> # Create a composite random vector
 >>> model = ot.SymbolicFunction(['E', 'F', 'L', 'I'], ['-F*L^3/(3*E*I)'])
->>> distribution = ot.Normal([50.0, 1.0, 10.0, 5.0], [1.0]*4, ot.IdentityMatrix(4))
+>>> distribution = ot.Normal([50.0, 1.0, 10.0, 5.0], [1.0]*4, ot.CorrelationMatrix.identityMatrix(4))
 >>> vect = ot.RandomVector(distribution)
 >>> X = ot.CompositeRandomVector(model, vect)
 >>> algo = ot.ExpectationSimulationAlgorithm(X)

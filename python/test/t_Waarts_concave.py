@@ -24,7 +24,7 @@ try:
 
     mean = [0.] * dim
     sigma = [1.] * dim
-    R = IdentityMatrix(dim)
+    R = CorrelationMatrix.identityMatrix(dim)
 
     myDistribution = Normal(mean, sigma, R)
 

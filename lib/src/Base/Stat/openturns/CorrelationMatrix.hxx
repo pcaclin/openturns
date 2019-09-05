@@ -62,10 +62,25 @@ public:
 
   /** CorrelationMatrix transpose */
   CorrelationMatrix transpose () const;
+  
+  /** Create identity matrix as CorrelationMatrix */
+  static CorrelationMatrix identityMatrix(const UnsignedInteger dimension);
 
-  /** CorrelationMatrix multiplication (must have consistent dimensions) */
+  /** Multiplications */ //TODO
+#ifdef _MSC_VER   // VS2010 does not like 'using' being called after overloads
   using CovarianceMatrix::operator *;
-  CorrelationMatrix operator * (const IdentityMatrix & m) const;
+#endif
+
+  Matrix operator * (const Matrix & m) const;
+  SquareMatrix operator * (const SquareMatrix & m) const;
+  SymmetricMatrix operator * (const SymmetricMatrix & m) const;
+  CovarianceMatrix operator * (const CovarianceMatrix & m) const;
+  CorrelationMatrix operator * (const CorrelationMatrix & m) const;
+#ifndef _MSC_VER
+  using CovarianceMatrix::operator *;
+#endif
+  
+  
 protected:
 
 

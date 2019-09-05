@@ -123,7 +123,7 @@ int main(int, char *[])
     fullprint << "CDF(quantile)=" << distribution.computeCDF(quantile) << std::endl;
 
     // Reference
-    Normal ref(mean, sigma, IdentityMatrix(distribution.getDimension()));
+    Normal ref(mean, sigma, CorrelationMatrix(MatrixImplementation::identityMatrix(distribution.getDimension())));
     fullprint << "Reference=" << std::endl;
     fullprint << "Zero point= " << zero
               << " pdf= " << ref.computePDF(zero)

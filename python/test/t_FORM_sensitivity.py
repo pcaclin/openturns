@@ -50,7 +50,7 @@ try:
     sigma[0] = 3.3
 # x1
     sigma[1] = 3.0
-    R = IdentityMatrix(dim)
+    R = CorrelationMatrix.identityMatrix(dim)
 
 #
     testDistributions = DistributionCollection(2)

@@ -72,6 +72,15 @@ MatrixImplementation::MatrixImplementation(const UnsignedInteger rowDim,
   std::copy(elementsValues.begin(), elementsValues.begin() + matrixSize, begin());
 }
 
+MatrixImplementation MatrixImplementation::identityMatrix(const UnsignedInteger dimension)
+{
+  MatrixImplementation identity(dimension, dimension);
+  for (UnsignedInteger i=0; i<dimension; ++i)
+    identity(i,i) = 1.0;
+  return identity;
+}
+
+
 /* Virtual constructor */
 MatrixImplementation * MatrixImplementation::clone() const
 {
@@ -173,6 +182,9 @@ UnsignedInteger MatrixImplementation::getDimension() const
 /* MatrixImplementation transpose */
 MatrixImplementation MatrixImplementation::transpose() const
 {
+  if (isIdentity())
+    return *this;
+  
   MatrixImplementation trans(nbColumns_, nbRows_);
   // The source matrix is accessed columnwise in the natural order
   for (UnsignedInteger j = 0; j < nbColumns_; ++j)
@@ -302,11 +314,18 @@ MatrixImplementation MatrixImplementation::genProd (const MatrixImplementation &
   int k(transposeLeft ? nbRows_ : nbColumns_);
   int l(transposeRight ? matrix.nbColumns_ : matrix.nbRows_);
   int n(transposeRight ? matrix.nbRows_ : matrix.nbColumns_);
-  if (k != l) throw InvalidDimensionException(HERE) << "Invalid dimensions in matrix/matrix product left="
+  
+  if (k != l) 
+    throw InvalidDimensionException(HERE) << "Invalid dimensions in matrix/matrix product left="
         << nbRows_ << "x" << nbColumns_
         << " right=" << matrix.nbRows_ << "x"
         << matrix.nbColumns_ << ", left is transposed=" << (transposeLeft ? "true" : "false") << ", right is transposed=" << (transposeRight ? "true" : "false");
 
+  // Check if matrix is identity
+  if (isIdentity())
+    return transposeRight ? matrix.transpose() : matrix;
+  
+  // GENERAL CASE
   MatrixImplementation mult(m, n);
   if ((m == 0) || (n == 0) || (k == 0)) return mult;
   char transa(transposeLeft ? 'T' : 'N');
@@ -639,6 +658,20 @@ Bool MatrixImplementation::operator == (const MatrixImplementation & rhs) const
 }
 
 
+Bool MatrixImplementation::isIdentity() const
+{
+  if (nbRows_ != nbColumns_)
+    return false;
+  
+  for (UnsignedInteger i=0; i<nbRows_; ++i)
+    for (UnsignedInteger j=0; j<nbColumns_; ++j)
+      if (operator()(i,j) != static_cast<Scalar>(i==j))
+        return false;
+      
+  return true;
+}
+
+
 Bool MatrixImplementation::isSymmetric() const
 {
   const Scalar epsilon = ResourceMap::GetAsScalar("Matrix-SymmetryThreshold");
@@ -728,18 +761,30 @@ MatrixImplementation MatrixImplementation::cleanSym(const Scalar threshold) cons
  * X is an nxq matrix */
 MatrixImplementation MatrixImplementation::solveLinearSystemRect (const MatrixImplementation & b,
     const Bool keepIntact)
-{
-  if (nbRows_ != b.nbRows_) throw InvalidDimensionException(HERE) << "The right-hand side has row dimension=" << b.nbRows_ << ", expected " << nbRows_;
-  if ((nbRows_ == 0) || (nbColumns_ == 0) || (b.nbColumns_ == 0)) throw InvalidDimensionException(HERE) << "Cannot solve a linear system with empty matrix or empty right-hand side";
+{ 
+  // Check if matrix is identity
+  if (isIdentity())
+    return b;
+  
+  // GENERAL CASE
+  if (nbRows_ != b.nbRows_)
+    throw InvalidDimensionException(HERE) << "The right-hand side has row dimension=" << b.nbRows_ << ", expected " << nbRows_;
+  
+  if ((nbRows_ == 0) || (nbColumns_ == 0) || (b.nbColumns_ == 0))
+    throw InvalidDimensionException(HERE) << "Cannot solve a linear system with empty matrix or empty right-hand side";
+  
   int m(nbRows_);
   int n(nbColumns_);
+  
   // B is an extended copy of b, it must be large enough to store the solution, see LAPACK documentation
   int p(std::max(m, n));
   int q(b.nbColumns_);
   MatrixImplementation B(p, q);
+  
   for(UnsignedInteger j = 0; j < static_cast<UnsignedInteger>(q); ++j)
     for (UnsignedInteger i = 0; i < static_cast<UnsignedInteger>(m); ++i)
       B(i, j) = b(i, j);
+  
   int nrhs(q);
   int lwork(-1);
   double lwork_d = -1.;
@@ -956,8 +1001,18 @@ Point MatrixImplementation::solveLinearSystemCov (const Point & b,
 Scalar MatrixImplementation::computeLogAbsoluteDeterminant (Scalar & sign,
     const Bool keepIntact)
 {
+  // If matrix is identity, determinant is 1
+  if (isIdentity())
+  {
+    sign = 1.0;
+    return 0.0;
+  }
+  
+  // GENERAL CASE  
   int n(nbRows_);
-  if (n == 0) throw InvalidDimensionException(HERE) << "Cannot compute the determinant of an empty matrix";
+  if (n == 0)
+    throw InvalidDimensionException(HERE) << "Cannot compute the determinant of an empty matrix";
+  
   Scalar logAbsoluteDeterminant = 0.0;
   sign = 1.0;
   if (n <= 2)
@@ -1008,6 +1063,11 @@ Scalar MatrixImplementation::computeLogAbsoluteDeterminant (Scalar & sign,
 /* Compute determinant */
 Scalar MatrixImplementation::computeDeterminant (const Bool keepIntact)
 {
+  // Check if matrix is identity
+  if (isIdentity())
+    return 1.0;
+
+  // GENERAL CASE  
   if (nbRows_ == 1) return (*this)(0, 0);
   if (nbRows_ == 2) return (*this)(0, 0) * (*this)(1, 1) - (*this)(0, 1) * (*this)(1, 0);
   Scalar sign = 0.0;
@@ -1087,6 +1147,11 @@ Scalar MatrixImplementation::computeTrace() const
 /* Compute the eigenvalues of a square matrix */
 MatrixImplementation::ComplexCollection MatrixImplementation::computeEigenValuesSquare (const Bool keepIntact)
 {
+  // Check if matrix is identity
+  if (isIdentity())
+    return MatrixImplementation::ComplexCollection(getNbRows(), 1.0);
+
+  // GENERAL CASE
   int n(nbRows_);
   if (n == 0) throw InvalidDimensionException(HERE) << "Cannot compute the eigenvalues of an empty matrix";
   char jobvl('N');
@@ -1121,6 +1186,14 @@ MatrixImplementation::ComplexCollection MatrixImplementation::computeEigenValues
 MatrixImplementation::ComplexCollection MatrixImplementation::computeEVSquare (ComplexMatrixImplementation & v,
     const Bool keepIntact)
 {
+  // Check if matrix is identity
+  if (isIdentity())
+  {
+    v = *this;
+    return MatrixImplementation::ComplexCollection(getNbRows(), 1.0);
+  }
+
+  // GENERAL CASE
   int n(nbRows_);
   if (n == 0) throw InvalidDimensionException(HERE) << "Cannot compute the eigenvalues of an empty matrix";
   char jobvl('N');
@@ -1181,6 +1254,11 @@ MatrixImplementation::ComplexCollection MatrixImplementation::computeEVSquare (C
 /* Compute the eigenvalues of a symmetric matrix */
 Point MatrixImplementation::computeEigenValuesSym (const Bool keepIntact)
 {
+  // Check if matrix is identity
+  if (isIdentity())
+    return Point(getNbRows(), 1.0);
+
+  // GENERAL CASE
   int n(nbRows_);
   if (n == 0) throw InvalidDimensionException(HERE) << "Cannot compute the eigenvalues of an empty matrix";
   char jobz('N');
@@ -1208,6 +1286,14 @@ Point MatrixImplementation::computeEigenValuesSym (const Bool keepIntact)
 Point MatrixImplementation::computeEVSym (MatrixImplementation & v,
     const Bool keepIntact)
 {
+  // Check if matrix is identity
+  if (isIdentity())
+  {
+    v = *this;
+    return Point(getNbRows(), 1.0);
+  }
+  
+  // GENERAL CASE
   int n(nbRows_);
   if (n == 0) throw InvalidDimensionException(HERE) << "Cannot compute the eigenvalues of an empty matrix";
   char jobz('V');
@@ -1236,6 +1322,11 @@ Point MatrixImplementation::computeEVSym (MatrixImplementation & v,
 /* Compute the singular values of a matrix */
 Point MatrixImplementation::computeSingularValues(const Bool keepIntact)
 {
+  // Check if matrix is identity
+  if (isIdentity())
+    return Point(getNbRows(), 1.0);
+  
+  // GENERAL CASE
   int m(nbRows_);
   int n(nbColumns_);
   if ((m == 0) || (n == 0)) throw InvalidDimensionException(HERE) << "Cannot compute the singular values of an empty matrix";
@@ -1272,6 +1363,15 @@ Point MatrixImplementation::computeSVD(MatrixImplementation & u,
                                        const Bool fullSVD,
                                        const Bool keepIntact)
 {
+  // Check if matrix is identity
+  if (isIdentity())
+  {
+    u = *this;
+    vT = *this;
+    return Point(getNbRows(), 1.0);
+  }
+
+  // GENERAL CASE
   int m(nbRows_);
   int n(nbColumns_);
   if ((m == 0) || (n == 0)) throw InvalidDimensionException(HERE) << "Cannot compute the singular values decomposition of an empty matrix";
@@ -1306,6 +1406,11 @@ Point MatrixImplementation::computeSVD(MatrixImplementation & u,
 /* Check if the matrix is SPD */
 Bool MatrixImplementation::isPositiveDefinite() const
 {
+  // Check if matrix is identity
+  if (isIdentity())
+    return true;
+  
+  // GENERAL CASE
   int info;
   int n(nbRows_);
   if (n == 0) throw InvalidDimensionException(HERE) << "Cannot check the definite positiveness of an empty matrix";
@@ -1354,7 +1459,12 @@ MatrixImplementation::ScalarCollection MatrixImplementation::triangularVectProd(
 
 /* Build the Cholesky factorization of the matrix */
 MatrixImplementation MatrixImplementation::computeCholesky(const Bool keepIntact)
-{
+{  
+  // Check if matrix is identity
+  if (isIdentity())
+    return *this; // TODO: to be confirmed
+
+  // GENERAL CASE
   int n = nbRows_;
   if (n == 0) throw InvalidDimensionException(HERE) << "Cannot compute the Cholesky decomposition of an empty matrix";
   int info = 0;

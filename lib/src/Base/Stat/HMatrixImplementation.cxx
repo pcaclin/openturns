@@ -573,7 +573,7 @@ CovarianceBlockAssemblyFunction::CovarianceBlockAssemblyFunction(const Covarianc
   , inputDimension_(vertices.getDimension())
   , epsilon_(epsilon)
 {
-  Matrix eps = epsilon_ * IdentityMatrix(covarianceModel.getOutputDimension());
+  Matrix eps = epsilon_ * Matrix::identityMatrix(covarianceModel.getOutputDimension());
   Pointer<MatrixImplementation> impl = eps.getImplementation();
   epsilonId_ = CovarianceMatrix(covarianceModel.getOutputDimension(), *impl.get());
   if (vertices.getSize() == 0) return;

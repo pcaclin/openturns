@@ -900,7 +900,7 @@ ComposedDistribution::IsoProbabilisticTransformation ComposedDistribution::getIs
     marginalTransformation.setParameter(parameters);
     marginalTransformation.setParameterDescription(description);
     // Suppress the correlation between the components.
-    const TriangularMatrix inverseCholesky(copula_.getShapeMatrix().computeCholesky().solveLinearSystem(IdentityMatrix(dimension)).getImplementation());
+    const TriangularMatrix inverseCholesky(copula_.getShapeMatrix().computeCholesky().solveLinearSystem(Matrix::identityMatrix(dimension)).getImplementation());
     LinearFunction linear(Point(dimension, 0.0), Point(dimension, 0.0), inverseCholesky);
     return ComposedFunction(linear, marginalTransformation);
   }

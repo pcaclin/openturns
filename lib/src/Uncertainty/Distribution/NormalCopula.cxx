@@ -21,7 +21,6 @@
 #include <cmath>
 #include "openturns/NormalCopula.hxx"
 #include "openturns/Uniform.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/NatafEllipticalCopulaEvaluation.hxx"
 #include "openturns/NatafEllipticalCopulaGradient.hxx"
 #include "openturns/NatafEllipticalCopulaHessian.hxx"

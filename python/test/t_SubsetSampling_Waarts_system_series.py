@@ -20,7 +20,7 @@ mean = ot.Point(dim, 0.0)
 
 sigma = ot.Point(dim, 1.0)
 
-R = ot.IdentityMatrix(dim)
+R = ot.CorrelationMatrix.identityMatrix(dim)
 myDistribution = ot.Normal(mean, sigma, R)
 
 #

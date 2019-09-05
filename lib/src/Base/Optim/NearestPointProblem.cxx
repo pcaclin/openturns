@@ -72,7 +72,7 @@ void NearestPointProblem::setLevelFunction(const Function & levelFunction)
   const Point center(dimension_);
   const Point constant(1);
   const Matrix linear(dimension_, 1);
-  const IdentityMatrix identity(dimension_);
+  const Matrix identity(Matrix::identityMatrix(dimension_));
   const SymmetricTensor quadratic(dimension_, 1, *(identity.getImplementation().get()));
   objective_ = QuadraticFunction(center, constant, linear, quadratic);
   setNearestPointConstraints();

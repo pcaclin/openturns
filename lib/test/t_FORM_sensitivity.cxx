@@ -63,7 +63,7 @@ int main(int, char *[])
     Point sigma(dim, 0.0);
     sigma[0] = 3.3; // x0
     sigma[1] = 3.0; // x1
-    IdentityMatrix R(dim);
+    CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
     ComposedDistribution::DistributionCollection testDistributions(2);
     testDistributions[0] = Normal(mean, sigma, R);
     ComposedDistribution::DistributionCollection marginals(2);

@@ -23,7 +23,6 @@
 
 #include "openturns/StrongMaximumTest.hxx"
 #include "openturns/Normal.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/NearestPointChecker.hxx"
 #include "openturns/DistributionImplementation.hxx"
 #include "openturns/ComparisonOperatorImplementation.hxx"

@@ -23,7 +23,6 @@
 #include "openturns/KarhunenLoeveResultImplementation.hxx"
 #include "openturns/LinearFunction.hxx"
 #include "openturns/Point.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/ComposedFunction.hxx"
 #include "openturns/LinearCombinationFunction.hxx"
 #include "openturns/P1LagrangeEvaluation.hxx"
@@ -113,7 +112,7 @@ KarhunenLoeveResultImplementation::FunctionCollection KarhunenLoeveResultImpleme
   if (modes_.getSize() == 0) return scaledModes;
   const UnsignedInteger dimension = modes_[0].getInputDimension();
   const Point zero(dimension);
-  const IdentityMatrix id(dimension);
+  const Matrix id(MatrixImplementation::identityMatrix(dimension));
   for (UnsignedInteger i = 0; i < scaledModes.getSize(); ++i)
   {
     const Function modeI(modes_[i]);

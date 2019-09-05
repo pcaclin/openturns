@@ -96,7 +96,7 @@ Matrix LogNormalMuSigma::gradient() const
   const Scalar dmulogdsigma = -sigmalog * dsigmalogdsigma;
   const Scalar dmulogdgamma = -dmulogdmu;
 
-  SquareMatrix nativeParametersGradient(IdentityMatrix(3));
+  SquareMatrix nativeParametersGradient(MatrixImplementation::identityMatrix(3));
   nativeParametersGradient(0, 0) = dmulogdmu;
   nativeParametersGradient(1, 0) = dmulogdsigma;
   nativeParametersGradient(2, 0) = dmulogdgamma;

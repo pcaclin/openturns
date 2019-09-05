@@ -25,7 +25,6 @@
 #include "openturns/Sample.hxx"
 #include "openturns/Point.hxx"
 #include "openturns/DistFunc.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/FisherSnedecor.hxx"
 #include "openturns/Log.hxx"
 
@@ -226,7 +225,7 @@ void DickeyFullerTest::estimateDriftAndLinearTrendModel()
     }
     const Scalar sigmaError = sqrt(error / T_);
     // Estimate the variance-covariance matrix associated to the coefficient
-    const IdentityMatrix identity(3);
+    const Matrix identity(MatrixImplementation::identityMatrix(3));
     const Matrix varianceCovariance(matrix.solveLinearSystem(identity));
 
     sigmaDrift_ = sigmaError * sqrt(varianceCovariance(0, 0));
@@ -278,7 +277,7 @@ void DickeyFullerTest::estimateDriftModel()
     const Scalar sigmaError = sqrt(error / T_);
 
     // Estimate the variance-covariance matrix associated to the coefficient
-    const IdentityMatrix identity(2);
+    const Matrix identity(MatrixImplementation::identityMatrix(2));
     const Matrix varianceCovariance(matrix.solveLinearSystem(identity));
 
     sigmaDrift_ = sigmaError * sqrt(varianceCovariance(0, 0));

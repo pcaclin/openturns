@@ -80,6 +80,11 @@ public:
   MatrixImplementation(const UnsignedInteger rowDim,
                        const UnsignedInteger colDim,
                        const ScalarCollection & elementsValues);
+  
+  
+  /** Constructor for identity matrix */
+  static MatrixImplementation identityMatrix(const UnsignedInteger dimension);
+  
 
   /** Virtual constructor */
   virtual MatrixImplementation * clone() const;
@@ -209,8 +214,10 @@ public:
   /** Resolution of a linear system in case of a symmetric matrix */
   Point solveLinearSystemSym(const Point & b,
                              const Bool keepIntact = true);
+  
   MatrixImplementation solveLinearSystemSym(const MatrixImplementation & b,
       const Bool keepIntact = true);
+  
 
   /** Resolution of a linear system in case of a covariance matrix */
   Point solveLinearSystemCov(const Point & b,
@@ -253,6 +260,9 @@ public:
 
   /** Check if the matrix is symmetric */
   virtual Bool isSymmetric() const;
+  
+  /** Check if the matrix is identity */
+  virtual Bool isIdentity() const;
 
   /** Check if the matrix is SPD */
   virtual Bool isPositiveDefinite() const;

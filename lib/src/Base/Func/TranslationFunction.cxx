@@ -21,7 +21,6 @@
 #include "openturns/TranslationFunction.hxx"
 #include "openturns/Function.hxx"
 #include "openturns/TranslationEvaluation.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/ConstantGradient.hxx"
 #include "openturns/NullHessian.hxx"
 
@@ -32,7 +31,7 @@ CLASSNAMEINIT(TranslationFunction)
 /* Default constructor */
 TranslationFunction::TranslationFunction(const Point & constant)
   : Function(new TranslationEvaluation(constant),
-             new ConstantGradient(IdentityMatrix(constant.getSize())),
+             new ConstantGradient(Matrix::identityMatrix(constant.getSize())),
              new NullHessian(constant.getSize(), constant.getSize()))
 {
   // Nothing to do

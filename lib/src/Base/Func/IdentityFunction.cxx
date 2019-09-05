@@ -20,7 +20,6 @@
  */
 #include "openturns/IdentityFunction.hxx"
 #include "openturns/IdentityEvaluation.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/ConstantGradient.hxx"
 #include "openturns/NullHessian.hxx"
 
@@ -31,7 +30,7 @@ CLASSNAMEINIT(IdentityFunction)
 /* Default constructor */
 IdentityFunction::IdentityFunction(const UnsignedInteger dimension)
   : Function(new IdentityEvaluation(dimension),
-             new ConstantGradient(IdentityMatrix(dimension)),
+             new ConstantGradient(Matrix::identityMatrix(dimension)),
              new NullHessian(dimension, dimension))
 {
   // Nothing to do

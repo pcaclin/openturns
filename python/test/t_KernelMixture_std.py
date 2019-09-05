@@ -20,13 +20,13 @@ try:
     # Create a collection of distribution
     aCollection = DistributionCollection()
 
-    aCollection.add(Normal(meanPoint, sigma, IdentityMatrix(dimension)))
+    aCollection.add(Normal(meanPoint, sigma, CorrelationMatrix.identityMatrix(dimension)))
     sample.add(meanPoint)
     meanPoint += Point(meanPoint.getDimension(), 1.0)
-    aCollection.add(Normal(meanPoint, sigma, IdentityMatrix(dimension)))
+    aCollection.add(Normal(meanPoint, sigma, CorrelationMatrix.identityMatrix(dimension)))
     sample.add(meanPoint)
     meanPoint += Point(meanPoint.getDimension(), 1.0)
-    aCollection.add(Normal(meanPoint, sigma, IdentityMatrix(dimension)))
+    aCollection.add(Normal(meanPoint, sigma, CorrelationMatrix.identityMatrix(dimension)))
     sample.add(meanPoint)
 
     # Instanciate one distribution object

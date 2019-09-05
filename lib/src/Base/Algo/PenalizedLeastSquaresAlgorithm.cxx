@@ -23,7 +23,6 @@
 #include "openturns/OSS.hxx"
 #include "openturns/PersistentObjectFactory.hxx"
 #include "openturns/Matrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/Exception.hxx"
 
 BEGIN_NAMESPACE_OPENTURNS
@@ -57,7 +56,7 @@ PenalizedLeastSquaresAlgorithm::PenalizedLeastSquaresAlgorithm(const Sample & x,
   if (penalizationFactor > 0.0)
   {
     const UnsignedInteger basisSize = indices.getSize();
-    penalizationMatrix_ = IdentityMatrix(basisSize);
+    penalizationMatrix_ = CovarianceMatrix(MatrixImplementation::identityMatrix(basisSize)); //TBD
   }
 }
 
@@ -79,7 +78,7 @@ PenalizedLeastSquaresAlgorithm::PenalizedLeastSquaresAlgorithm(const Sample & x,
   if (penalizationFactor > 0.0)
   {
     const UnsignedInteger basisSize = indices.getSize();
-    penalizationMatrix_ = IdentityMatrix(basisSize);
+    penalizationMatrix_ = CovarianceMatrix(MatrixImplementation::identityMatrix(basisSize));
   }
 }
 

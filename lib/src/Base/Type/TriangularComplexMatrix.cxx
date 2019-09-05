@@ -23,7 +23,6 @@
 #include "openturns/Matrix.hxx"
 #include "openturns/SquareMatrix.hxx"
 #include "openturns/SymmetricMatrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/HermitianMatrix.hxx"
 
 BEGIN_NAMESPACE_OPENTURNS
@@ -213,12 +212,6 @@ SquareComplexMatrix TriangularComplexMatrix::operator * (const SymmetricMatrix &
   char uplo('L');
   if (!isLowerTriangular()) uplo = 'R';
   return Implementation((getImplementation()->triangularProd(*(m.getImplementation()), 'L', uplo ) ).clone());
-}
-
-/*  IdentityMatrix multiplications */
-TriangularComplexMatrix TriangularComplexMatrix::operator * (const IdentityMatrix & ) const
-{
-  return (*this);
 }
 
 /* Multiplication with a ComplexCollection (must have consistent dimensions) */

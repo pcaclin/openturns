@@ -18,8 +18,7 @@ def stop():
 
 
 # We create a numerical math function
-myFunction = ot.Function(
-    ["E", "F", "L", "I"], ["d"], ["-F*L^3/(3*E*I)"])
+myFunction = ot.Function(["E", "F", "L", "I"], ["d"], ["-F*L^3/(3*E*I)"])
 
 dim = myFunction.getInputDimension()
 
@@ -34,7 +33,7 @@ mean[2] = 10.0
 # I
 mean[3] = 5.0
 sigma = [1.0] * dim
-R = ot.IdentityMatrix(dim)
+R = ot.CovarianceMatrix.identityMatrix(dim)
 myDistribution = ot.Normal(mean, sigma, R)
 
 # We create a 'usual' RandomVector from the Distribution

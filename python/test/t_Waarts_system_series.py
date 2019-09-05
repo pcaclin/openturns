@@ -48,7 +48,7 @@ try:
 
     sigma = Point(dim, 1.0)
 
-    R = IdentityMatrix(dim)
+    R = CorrelationMatrix.identityMatrix(dim)
     myDistribution = Normal(mean, sigma, R)
 
     start = myDistribution.getMean()

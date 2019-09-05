@@ -26,7 +26,6 @@
 #include "openturns/Cache.hxx"
 #include "openturns/Collection.hxx"
 #include "openturns/Description.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/Indices.hxx"
 #include "openturns/IndicesCollectionImplementation.hxx"
 #include "openturns/IndicesCollection.hxx"

@@ -63,7 +63,7 @@ int main(int, char *[])
     Point sigma(dim, 0.0);
     sigma[0] = 3.3; // x0
     sigma[1] = 3.0; // x1
-    IdentityMatrix R(dim);
+    CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
     Normal myDistribution(mean, sigma, R);
 
     /* we name the components of the distribution */

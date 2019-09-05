@@ -26,8 +26,6 @@
 
 BEGIN_NAMESPACE_OPENTURNS
 
-class IdentityMatrix;
-
 /**
  * @class SymmetricMatrix
  *
@@ -75,6 +73,9 @@ public:
   SymmetricMatrix(const UnsignedInteger dim,
                   const ScalarCollection & elementsValues);
 
+  /** Create identity matrix as SymmetricMatrix */
+  static SymmetricMatrix identityMatrix(const UnsignedInteger dimension);  
+ 
   /** Check if the internal representation is actually symmetric */
   void checkSymmetry() const;
 
@@ -119,7 +120,6 @@ public:
   Matrix operator * (const Matrix & m) const;
   SquareMatrix operator * (const SquareMatrix & m) const;
   SquareMatrix operator * (const SymmetricMatrix & m) const;
-  SymmetricMatrix operator * (const IdentityMatrix & m) const;
 
   /** SymmetricMatrix integer power */
   SymmetricMatrix power(const UnsignedInteger n) const;

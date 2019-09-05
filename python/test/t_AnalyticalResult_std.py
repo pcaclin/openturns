@@ -38,7 +38,7 @@ try:
     mean[2] = 10.0  # L
     mean[3] = 5.0  # I
     sigma = Point(dim, 1.0)
-    R = IdentityMatrix(dim)
+    R = CorrelationMatrix.identityMatrix(dim)
     myDistribution = Normal(mean, sigma, R)
 
     # We create a 'usual' RandomVector from the Distribution

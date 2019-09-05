@@ -52,7 +52,7 @@ int main(int, char *[])
     {
       sigma[i] = 0.1 * (i + 1);
     }
-    CorrelationMatrix R = IdentityMatrix(dim);
+    CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
     for (UnsignedInteger i = 1; i < dim; i++)
     {
       R(i, i - 1) = 0.25;

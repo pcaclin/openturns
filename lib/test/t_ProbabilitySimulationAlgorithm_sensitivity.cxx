@@ -48,7 +48,7 @@ int main(int, char *[])
     mean[2] = 10.0; // L
     mean[3] =  5.0; // I
     Point sigma(dim, 1.0);
-    IdentityMatrix R(dim);
+    CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
     Normal myDistribution(mean, sigma, R);
 
     /* We create a 'usual' RandomVector from the Distribution */

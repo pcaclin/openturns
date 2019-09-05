@@ -21,7 +21,6 @@
 #include "openturns/SquareMatrix.hxx"
 #include "openturns/SquareComplexMatrix.hxx"
 #include "openturns/SymmetricMatrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 
 BEGIN_NAMESPACE_OPENTURNS
 
@@ -78,6 +77,11 @@ SquareMatrix::SquareMatrix(const SymmetricMatrix & symmetric)
   // Nothing to do
 }
 
+/** Create identity matrix as CovarianceMatrix */
+SquareMatrix SquareMatrix::identityMatrix(const UnsignedInteger dimension)
+{
+  return SquareMatrix(MatrixImplementation::identityMatrix(dimension));
+}
 
 /* String converter */
 String SquareMatrix::__repr__() const
@@ -136,10 +140,6 @@ SquareMatrix SquareMatrix::operator * (const SymmetricMatrix & m) const
   return Implementation(m.getImplementation()->symProd(*getImplementation(), 'R').clone());
 }
 
-SquareMatrix SquareMatrix::operator * (const IdentityMatrix & ) const
-{
-  return *this;
-}
 
 /* Multiplication with a Point (must have consistent dimensions) */
 Point SquareMatrix::operator * (const Point & pt) const

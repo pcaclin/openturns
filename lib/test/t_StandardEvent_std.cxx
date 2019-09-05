@@ -45,7 +45,7 @@ int main(int, char *[])
     /* We create a normal distribution point of dimension dim */
     Point mean(dim, 0.0);
     Point sigma(dim, 1.0);
-    Normal myDistribution(mean, sigma, IdentityMatrix(dim));
+    Normal myDistribution(mean, sigma, CorrelationMatrix(MatrixImplementation::identityMatrix(dim)));
 
     /* We create a 'usual' RandomVector from the Distribution */
     RandomVector vect(myDistribution);
@@ -66,7 +66,7 @@ int main(int, char *[])
     fullprint << "myStandardEvent sample=" << myStandardEvent.getSample(10) << std::endl;
 
     // Build a standard event based on an event
-    CorrelationMatrix R = IdentityMatrix(dim);
+    CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
     for (UnsignedInteger i = 1; i < dim; i++)
     {
       R(i, i - 1) = 0.5;

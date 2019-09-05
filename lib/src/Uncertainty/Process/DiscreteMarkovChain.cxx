@@ -40,7 +40,7 @@ static const Factory<DiscreteMarkovChain> Factory_DiscreteMarkovChain;
 DiscreteMarkovChain::DiscreteMarkovChain()
   : ProcessImplementation()
   , origin_(Dirac(0))
-  , transitionMatrix_(IdentityMatrix(1))
+  , transitionMatrix_(MatrixImplementation::identityMatrix(1))
   , currentState_(0)
 {
   // Set the dimension of the process

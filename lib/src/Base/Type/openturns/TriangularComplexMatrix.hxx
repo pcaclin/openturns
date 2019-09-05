@@ -27,7 +27,6 @@
 BEGIN_NAMESPACE_OPENTURNS
 
 class SymmetricMatrix;
-class IdentityMatrix;
 class SquareMatrix;
 class Matrix;
 class HermitianMatrix;
@@ -130,9 +129,6 @@ public:
 
   /** Real SymmetricMatrix multiplications  */
   SquareComplexMatrix operator * (const SymmetricMatrix & m) const;
-
-  /** IdentityMatrix multiplications  */
-  TriangularComplexMatrix operator * (const IdentityMatrix & m) const;
 
   /** Multiplication with a NumericaComplexCollection (must have consistent dimensions) */
   ComplexCollection operator * (const ComplexCollection & p) const;

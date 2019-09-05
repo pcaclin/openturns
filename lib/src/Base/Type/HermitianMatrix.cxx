@@ -21,7 +21,6 @@
 #include "openturns/HermitianMatrix.hxx"
 #include "openturns/TriangularComplexMatrix.hxx"
 #include "openturns/SymmetricMatrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/SquareMatrix.hxx"
 #include "openturns/Matrix.hxx"
 
@@ -219,12 +218,6 @@ SquareComplexMatrix HermitianMatrix::operator * (const SymmetricMatrix & m) cons
 {
   m.checkSymmetry();
   return Implementation((getImplementation()->hermProd(*(m.getImplementation()), 'L') ).clone());
-}
-
-/* IdentityMatrix multiplications  */
-HermitianMatrix HermitianMatrix::operator * (const IdentityMatrix & ) const
-{
-  return (*this);
 }
 
 /* Multiplication with a ComplexCollection (must have consistent dimensions) */

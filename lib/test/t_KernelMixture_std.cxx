@@ -44,13 +44,13 @@ int main(int, char *[])
     // Create a collection of distribution
     Mixture::DistributionCollection aCollection;
 
-    aCollection.add( Normal(meanPoint, sigma, IdentityMatrix(dimension)) );
+    aCollection.add( Normal(meanPoint, sigma, CorrelationMatrix(MatrixImplementation::identityMatrix(dimension))) );
     sample.add(meanPoint);
     meanPoint += Point(dimension, 1.0);
-    aCollection.add( Normal(meanPoint, sigma, IdentityMatrix(dimension)) );
+    aCollection.add( Normal(meanPoint, sigma, CorrelationMatrix(MatrixImplementation::identityMatrix(dimension))) );
     sample.add(meanPoint);
     meanPoint += Point(dimension, 1.0);
-    aCollection.add( Normal(meanPoint, sigma, IdentityMatrix(dimension)) );
+    aCollection.add( Normal(meanPoint, sigma, CorrelationMatrix(MatrixImplementation::identityMatrix(dimension))) );
     sample.add(meanPoint);
 
     // Instanciate one distribution object

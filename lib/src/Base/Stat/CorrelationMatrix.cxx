@@ -46,6 +46,7 @@ CorrelationMatrix::CorrelationMatrix(const MatrixImplementation & i)
   // Nothing to do
 }
 
+
 /* Constructor with size (dim, which is the same for nbRows_ and nbColumns_ )*/
 CorrelationMatrix::CorrelationMatrix(const UnsignedInteger dim)
   : CovarianceMatrix(dim)
@@ -64,6 +65,41 @@ CorrelationMatrix::CorrelationMatrix(const UnsignedInteger dim,
   // Nothing to do
 }
 
+/** Create identity matrix as CorrelationMatrix */
+CorrelationMatrix CorrelationMatrix::identityMatrix(const UnsignedInteger dimension)
+{
+  return CorrelationMatrix(MatrixImplementation::identityMatrix(dimension));
+}
+  
+
+/* Multiplications */
+Matrix CorrelationMatrix::operator * (const Matrix & m) const
+{
+  return Implementation((getImplementation()->symProd(*(m.getImplementation()), 'L') ).clone());
+}
+
+SquareMatrix CorrelationMatrix::operator * (const SquareMatrix & m) const
+{
+  return Implementation((getImplementation()->symProd(*(m.getImplementation()), 'L') ).clone());
+}
+
+SymmetricMatrix CorrelationMatrix::operator * (const SymmetricMatrix & m) const
+{
+  return Implementation((getImplementation()->symProd(*(m.getImplementation()), 'L') ).clone());
+}
+
+CovarianceMatrix CorrelationMatrix::operator * (const CovarianceMatrix & m) const
+{
+  return Implementation((getImplementation()->symProd(*(m.getImplementation()), 'L') ).clone());
+}
+
+CorrelationMatrix CorrelationMatrix::operator * (const CorrelationMatrix & m) const
+{
+  return Implementation((getImplementation()->symProd(*(m.getImplementation()), 'L') ).clone());
+}
+
+
+
 /* String converter */
 String CorrelationMatrix::__repr__() const
 {
@@ -75,12 +111,6 @@ String CorrelationMatrix::__repr__() const
 
 /* CorrelationMatrix transpose */
 CorrelationMatrix CorrelationMatrix::transpose () const
-{
-  return *this;
-}
-
-/* CorrelationMatrix multiplication (must have consistent dimensions) */
-CorrelationMatrix CorrelationMatrix::operator * (const IdentityMatrix & ) const
 {
   return *this;
 }

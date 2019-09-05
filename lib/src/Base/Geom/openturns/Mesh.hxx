@@ -28,7 +28,6 @@
 #include "openturns/Indices.hxx"
 #include "openturns/IndicesCollection.hxx"
 #include "openturns/SquareMatrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/Graph.hxx"
 
 BEGIN_NAMESPACE_OPENTURNS

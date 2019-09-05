@@ -204,7 +204,7 @@ DistributionFactoryResult DistributionFactoryImplementation::buildMaximumLikelih
       dpdfi = dpdfi / pdf(i, 0);
       theta = theta + dpdfi * dpdfi.transpose() / size;
     }
-    CovarianceMatrix covariance(SymmetricMatrix(theta.getImplementation()).solveLinearSystem(IdentityMatrix(parameterDimension) / size).getImplementation());
+    CovarianceMatrix covariance(SymmetricMatrix(theta.getImplementation()).solveLinearSystem(Matrix::identityMatrix(parameterDimension) / size).getImplementation());
     parameterDistribution = Normal(distribution.getParameter(), covariance);
   }
   else

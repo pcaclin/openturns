@@ -86,7 +86,7 @@ Matrix LogNormalMuSigmaOverMu::gradient() const
   const Matrix muSigmaJacobian = muSigmaParameters.gradient();
 
   // compute the jacobian of the transformation (mu, sigma, gamma) -> (mu, sigma/mu, gamma)
-  SquareMatrix muSigmaOverMuJacobian(IdentityMatrix(3));
+  SquareMatrix muSigmaOverMuJacobian(MatrixImplementation::identityMatrix(3));
   muSigmaOverMuJacobian(0, 1) =  sigmaOverMu_;
   muSigmaOverMuJacobian(1, 1) =  mu_;
 

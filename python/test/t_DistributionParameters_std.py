@@ -36,7 +36,7 @@ for distParam in distParams:
     # by the finite difference technique
     eps = 1e-5
     dim = len(non_native)
-    nativeParamGrad = ot.SquareMatrix(ot.IdentityMatrix(dim))
+    nativeParamGrad = ot.SquareMatrix(ot.CorrelationMatrix.identityMatrix(dim))
 
     for i in range(dim):
         for j in range(dim):

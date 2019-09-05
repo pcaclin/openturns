@@ -40,7 +40,7 @@ try:
     sigma[0] = 1.0
     sigma[1] = 1.0
 
-    R = IdentityMatrix(dim)
+    R = CorrelationMatrix.identityMatrix(dim)
 
     myDistribution = Normal(mean, sigma, R)
 

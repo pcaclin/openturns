@@ -27,7 +27,6 @@
 #include "openturns/Distribution.hxx"
 #include "openturns/Exception.hxx"
 #include "openturns/Log.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/Collection.hxx"
 #include "openturns/RandomGenerator.hxx"
 #include "openturns/CompositeDistribution.hxx"
@@ -3106,7 +3105,7 @@ TriangularMatrix DistributionImplementation::getInverseCholesky() const
   // Compute its Cholesky factor
   TriangularMatrix cholesky(getCholesky());
 
-  const TriangularMatrix inverseCholesky(cholesky.solveLinearSystem(IdentityMatrix(dimension_), false).getImplementation());
+  const TriangularMatrix inverseCholesky(cholesky.solveLinearSystem(Matrix::identityMatrix(dimension_), false).getImplementation());
 
   return inverseCholesky;
 }

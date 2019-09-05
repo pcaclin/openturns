@@ -41,7 +41,7 @@ int main(int, char *[])
     Point sigma(dim, 1.0);
     sigma[0] = 3.0;
     sigma[1] = 1.0;
-    CorrelationMatrix R = IdentityMatrix(dim);
+    CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
     for (UnsignedInteger i = 1; i < dim; i++)
     {
       R(i, i - 1) = 0.75;

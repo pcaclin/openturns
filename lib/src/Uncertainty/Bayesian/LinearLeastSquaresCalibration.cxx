@@ -128,7 +128,7 @@ void LinearLeastSquaresCalibration::run()
   Distribution error;
     try
     {
-      error = Normal(Point(dimension), CovarianceMatrix((IdentityMatrix(dimension) * varianceError).getImplementation()));
+      error = Normal(Point(dimension), CovarianceMatrix((Matrix::identityMatrix(dimension) * varianceError).getImplementation()));
     }
   catch (...)
     {

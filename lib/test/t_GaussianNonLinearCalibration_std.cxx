@@ -52,7 +52,7 @@ int main(int, char *[])
     params.fill();
     ParametricFunction modelX(model, params, p_ref);
     Sample y = modelX(x);
-    y += Normal(Point(2), Point(2, 0.05), IdentityMatrix(2)).getSample(y.getSize());
+    y += Normal(Point(2), Point(2, 0.05), CorrelationMatrix(MatrixImplementation::identityMatrix(2))).getSample(y.getSize());
     Point candidate(3, 1.0);
     CovarianceMatrix priorCovariance(3);
     for (UnsignedInteger i = 0; i < 3; ++i)

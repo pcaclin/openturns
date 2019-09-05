@@ -157,7 +157,6 @@ ot_add_python_module(typ typ_module.i
                       TriangularComplexMatrix.i TriangularComplexMatrix_doc.i.in
                       CovarianceMatrix.i CovarianceMatrix_doc.i.in
                       CorrelationMatrix.i CorrelationMatrix_doc.i.in
-                      IdentityMatrix.i IdentityMatrix_doc.i.in
                       Sample.i Sample_doc.i.in
                       HistoryStrategyImplementation.i HistoryStrategyImplementation_doc.i.in
                       HistoryStrategy.i HistoryStrategy_doc.i.in

@@ -37,7 +37,6 @@
 #include "openturns/Path.hxx"
 #include "openturns/TBB.hxx"
 #include "kendall.h"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/SpecFunc.hxx"
 #include "openturns/Lapack.hxx"
 #include "openturns/Os.hxx"

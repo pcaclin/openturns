@@ -34,7 +34,7 @@ p_ref = [2.8, 1.2, 0.5]
 params = [0, 1, 2]
 modelX = ot.ParametricFunction(model, params, p_ref)
 y = modelX(x)
-y += ot.Normal([0.0]*2, [0.05]*2, ot.IdentityMatrix(2)).getSample(m)
+y += ot.Normal([0.0]*2, [0.05]*2, ot.CorrelationMatrix.identityMatrix(2)).getSample(m)
 candidate = [1.0]*3
 priorCovariance = ot.CovarianceMatrix(3)
 for i in range(3):

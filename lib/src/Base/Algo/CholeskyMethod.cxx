@@ -289,7 +289,7 @@ Point CholeskyMethod::solveNormal(const Point & rhs)
 CovarianceMatrix CholeskyMethod::getGramInverse() const
 {
   const UnsignedInteger basisSize = currentIndices_.getSize();
-  TriangularMatrix invL(l_.solveLinearSystem(IdentityMatrix(basisSize)).getImplementation());
+  TriangularMatrix invL(l_.solveLinearSystem(Matrix::identityMatrix(basisSize)).getImplementation());
   return invL.computeGram(true);
 }
 
@@ -297,7 +297,7 @@ CovarianceMatrix CholeskyMethod::getGramInverse() const
 SymmetricMatrix CholeskyMethod::getH() const
 {
   const UnsignedInteger basisSize = currentIndices_.getSize();
-  TriangularMatrix invL(l_.solveLinearSystem(IdentityMatrix(basisSize)).getImplementation());
+  TriangularMatrix invL(l_.solveLinearSystem(Matrix::identityMatrix(basisSize)).getImplementation());
   MatrixImplementation psiAk(computeWeightedDesign());
   return invL.getImplementation()->genProd(psiAk, false, true).computeGram(true);
 }
@@ -306,7 +306,7 @@ SymmetricMatrix CholeskyMethod::getH() const
 Point CholeskyMethod::getHDiag() const
 {
   const UnsignedInteger basisSize = currentIndices_.getSize();
-  const MatrixImplementation invL(*l_.solveLinearSystem(IdentityMatrix(basisSize)).getImplementation());
+  const MatrixImplementation invL(*l_.solveLinearSystem(Matrix::identityMatrix(basisSize)).getImplementation());
   const MatrixImplementation psiAk(computeWeightedDesign());
   const MatrixImplementation invLPsiAk(invL.genProd(psiAk, false, true));
 
@@ -330,7 +330,7 @@ Point CholeskyMethod::getHDiag() const
 Point CholeskyMethod::getGramInverseDiag() const
 {
   const UnsignedInteger basisSize = currentIndices_.getSize();
-  const MatrixImplementation invL(*l_.solveLinearSystem(IdentityMatrix(basisSize)).getImplementation());
+  const MatrixImplementation invL(*l_.solveLinearSystem(Matrix::identityMatrix(basisSize)).getImplementation());
   Point diag(basisSize);
   MatrixImplementation::const_iterator invL_iterator(invL.begin());
   for (UnsignedInteger i = 0; i < basisSize; ++ i)
@@ -351,7 +351,7 @@ Scalar CholeskyMethod::getGramInverseTrace() const
 {
   Scalar traceInverse = 0.0;
   const UnsignedInteger basisSize = currentIndices_.getSize();
-  const MatrixImplementation invL(*l_.solveLinearSystem(IdentityMatrix(basisSize)).getImplementation());
+  const MatrixImplementation invL(*l_.solveLinearSystem(Matrix::identityMatrix(basisSize)).getImplementation());
   for (MatrixImplementation::const_iterator it = invL.begin(); it != invL.end(); ++it)
   {
     traceInverse += (*it) * (*it);

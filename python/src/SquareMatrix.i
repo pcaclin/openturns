@@ -24,6 +24,9 @@ namespace OT {
 
   OTMatrixAccessors()
 
+  SquareMatrix __rmul__(Scalar s) { return s * (*self); }
+  Matrix __rmul__(const Matrix & m) { return m * (*self); }
+  
 #if SWIG_VERSION < 0x030011
   SquareMatrix __truediv__(Scalar s) { return (*self) / s; }
 #endif

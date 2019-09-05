@@ -279,12 +279,6 @@ ComplexMatrix ComplexMatrix::operator* (const SymmetricMatrix & m) const
   return Implementation((getImplementation()->genProd(*(m.getImplementation())) ).clone());
 }
 
-/* ComplexMatrix multiplication - SymmetricMatrix on right */
-ComplexMatrix ComplexMatrix::operator* (const IdentityMatrix & ) const
-{
-  return (*this);
-}
-
 /* Multiplication with a ScalarCollection  */
 ComplexMatrix::ComplexCollection ComplexMatrix::operator* (const ScalarCollection & collection) const
 {

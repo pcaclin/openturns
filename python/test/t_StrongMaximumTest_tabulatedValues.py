@@ -19,7 +19,7 @@ try:
         # We create a normal distribution point of dimension 1
         mean = [0.] * dim
         sigma = [1.0] * dim
-        R = IdentityMatrix(dim)
+        R = CorrelationMatrix.identityMatrix(dim)
         myDistribution = Normal(mean, sigma, R)
 
         # We create a 'usual' RandomVector from the Distribution

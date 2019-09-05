@@ -72,7 +72,7 @@ try:
     dim = 200
     meanPoint = Point(dim, 0.1)
     sigma = Point(dim, 1.0)
-    distribution = Normal(meanPoint, sigma, IdentityMatrix(dim))
+    distribution = Normal(meanPoint, sigma, CorrelationMatrix.identityMatrix(dim))
     print("Has independent copula? ", distribution.hasIndependentCopula())
 
     # Test for sampling

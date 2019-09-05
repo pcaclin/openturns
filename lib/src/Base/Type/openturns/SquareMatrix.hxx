@@ -26,8 +26,6 @@
 
 BEGIN_NAMESPACE_OPENTURNS
 
-class IdentityMatrix;
-
 class SymmetricMatrix;
 
 class SquareComplexMatrix;
@@ -78,6 +76,9 @@ public:
   /** Constructor from symmetric matrix */
   SquareMatrix(const SymmetricMatrix & symmetric);
 
+  /** Create identity matrix as SymmetricMatrix */
+  static SquareMatrix identityMatrix(const UnsignedInteger dimension);  
+
   /** String converter */
   String __repr__() const;
 
@@ -101,8 +102,7 @@ public:
 #endif
   SquareMatrix operator * (const SquareMatrix & m) const;
   SquareMatrix operator * (const SymmetricMatrix & m) const;
-  SquareMatrix operator * (const IdentityMatrix & m) const;
-
+  
   /** SquareMatrix integer power */
   SquareMatrix power(const UnsignedInteger n) const;
 

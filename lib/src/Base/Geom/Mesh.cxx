@@ -618,8 +618,12 @@ Graph Mesh::draw3D(const Bool drawEdge,
 {
   checkValidity();
   // First, check if the matrix is a rotation matrix of R^3
-  if (rotation.getDimension() != 3) throw InvalidArgumentException(HERE) << "Error: the matrix is not a 3d square matrix.";
-  if (Point((rotation * rotation.transpose() - IdentityMatrix(3)).getImplementation()).norm() > 1e-5) throw InvalidArgumentException(HERE) << "Error: the matrix is not a rotation matrix.";
+  if (rotation.getDimension() != 3)
+    throw InvalidArgumentException(HERE) << "Error: the matrix is not a 3d square matrix.";
+  
+  if (Point((rotation * rotation.transpose() - SquareMatrix(MatrixImplementation::identityMatrix(3))).getImplementation()).norm() > 1e-5)
+    throw InvalidArgumentException(HERE) << "Error: the matrix is not a rotation matrix.";
+  
   const UnsignedInteger verticesSize = getVerticesNumber();
   const UnsignedInteger simplicesSize = getSimplicesNumber();
   if (verticesSize == 0) throw InvalidArgumentException(HERE) << "Error: cannot draw a mesh with no vertex or no simplex.";

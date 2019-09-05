@@ -348,13 +348,13 @@ void InverseWishart::setV(const CovarianceMatrix & v)
   {
     throw InvalidArgumentException(HERE) << "Error: V must be positive definite";
   }
-  const TriangularMatrix T(cholesky_.solveLinearSystem(IdentityMatrix(p)).getImplementation());
+  const TriangularMatrix T(cholesky_.solveLinearSystem(Matrix::identityMatrix(p)).getImplementation());
   // vInverse = T'.T, non const because we compute its Cholesky factor
   CovarianceMatrix vInverse(T.computeGram(true));
   // Flag false means that vInverse is not preserved, non const because we solve a linear system with this matrix
   TriangularMatrix vInverseCholesky(vInverse.computeCholesky(false));
   // Flag false means that vInverse is not preserved
-  inverseCholeskyInverse_ = vInverseCholesky.solveLinearSystem(IdentityMatrix(p), false).getImplementation();
+  inverseCholeskyInverse_ = vInverseCholesky.solveLinearSystem(Matrix::identityMatrix(p), false).getImplementation();
   setDimension((p * (p + 1)) / 2);
   isAlreadyComputedMean_ = false;
   isAlreadyComputedCovariance_ = false;

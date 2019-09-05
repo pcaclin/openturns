@@ -61,7 +61,6 @@ Matrices
     CorrelationMatrix
     CovarianceMatrix
     HermitianMatrix
-    IdentityMatrix
     SquareMatrix
     SquareComplexMatrix
     SymmetricMatrix

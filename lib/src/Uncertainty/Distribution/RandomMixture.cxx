@@ -460,7 +460,7 @@ void RandomMixture::setDistributionCollectionAndWeights(const DistributionCollec
     }
     else
     {
-      inverseWeights_ = weights_.solveLinearSystem(IdentityMatrix(dimension));
+      inverseWeights_ = weights_.solveLinearSystem(Matrix::identityMatrix(dimension));
       detWeightsInverse_ = inverseWeights_.getImplementation().get()->computeDeterminant();
     }
     setParallel(coll[0].getImplementation()->isParallel());
@@ -970,7 +970,7 @@ void RandomMixture::setDistributionCollectionAndWeights(const DistributionCollec
   // When reducing collection to 1, computations become faster
   if (distributionCollection_.getSize() == dimension)
   {
-    inverseWeights_ = weights_.solveLinearSystem(IdentityMatrix(dimension));
+    inverseWeights_ = weights_.solveLinearSystem(Matrix::identityMatrix(dimension));
     isAnalytical_ = true;
     detWeightsInverse_ = inverseWeights_.getImplementation().get()->computeDeterminant();
   }

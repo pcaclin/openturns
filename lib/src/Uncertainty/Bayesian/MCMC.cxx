@@ -24,7 +24,6 @@
 #include "openturns/Normal.hxx"
 #include "openturns/SpecFunc.hxx"
 #include "openturns/PersistentObjectFactory.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/Full.hxx"
 #include "openturns/SymbolicFunction.hxx"
 #include "openturns/ParametricFunction.hxx"

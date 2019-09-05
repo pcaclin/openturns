@@ -79,7 +79,6 @@ def getCorrelationMatrixFromMap(Vars, Map):
 %include ComplexTensor.i
 %include CovarianceMatrix.i
 %include CorrelationMatrix.i 
-%include IdentityMatrix.i 
 %include Sample.i
 %include DomainImplementation.i
 %include Interval.i

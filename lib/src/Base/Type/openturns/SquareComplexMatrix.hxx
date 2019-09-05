@@ -26,8 +26,6 @@
 
 BEGIN_NAMESPACE_OPENTURNS
 
-class IdentityMatrix;
-
 class HermitianMatrix;
 
 class TriangularComplexMatrix;
@@ -97,7 +95,6 @@ public:
   ComplexMatrix operator * (const ComplexMatrix & m) const;
   SquareComplexMatrix operator * (const SquareComplexMatrix & m) const;
   SquareComplexMatrix operator * (const HermitianMatrix & m) const;
-  SquareComplexMatrix operator * (const IdentityMatrix & m) const;
 
   /** SquareComplexMatrix integer power */
   SquareComplexMatrix power(const UnsignedInteger n) const;

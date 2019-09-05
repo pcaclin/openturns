@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from openturns.viewer import View
 import math as m
 
-Id = ot.IdentityMatrix(2)
+Id = ot.CorrelationMatrix.identityMatrix(2)
 atoms = [ot.Normal([1.0, 2.0], [0.5, 0.8], Id), ot.Normal(
     [1.0, -2.0], [0.9, 0.8], Id), ot.Normal([-1.0, 0.0], [0.5, 0.6], Id)]
 weights = [0.3, 0.3, 0.4]

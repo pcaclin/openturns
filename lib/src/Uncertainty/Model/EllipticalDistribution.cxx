@@ -30,7 +30,6 @@
 #include "openturns/Description.hxx"
 #include "openturns/PersistentObjectFactory.hxx"
 #include "openturns/TriangularMatrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/ResourceMap.hxx"
 #include "openturns/SpecFunc.hxx"
 #include "openturns/Brent.hxx"
@@ -452,7 +451,7 @@ void EllipticalDistribution::update()
     // Compute its Cholesky factor
     cholesky_ = shape_.computeCholesky();
 
-    inverseCholesky_ = cholesky_.solveLinearSystem(IdentityMatrix(dimension)).getImplementation();
+    inverseCholesky_ = cholesky_.solveLinearSystem(Matrix::identityMatrix(dimension)).getImplementation();
 
     // Inverse the correlation matrix R = D^(-1).L.L'.D^(-1)
     // R^(-1) = D.L^(-1).L^(-1)'.D
@@ -469,7 +468,7 @@ void EllipticalDistribution::update()
     if (shape_.getDimension() == 0)  // First time we enter here, set matrix sizes
     {
       shape_ = CovarianceMatrix(1);
-      inverseR_ = IdentityMatrix(1);
+      inverseR_ = MatrixImplementation::identityMatrix(1);
       cholesky_ = TriangularMatrix(1);
       inverseCholesky_ = TriangularMatrix(1);
     }

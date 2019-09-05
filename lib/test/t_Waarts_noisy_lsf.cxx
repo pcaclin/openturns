@@ -240,7 +240,7 @@ int main(int, char *[])
     for (UnsignedInteger i = 0; i < resultAR.getStandardSpaceDesignPoint().getDimension(); ++i)
       meanSE[i] = resultAR.getStandardSpaceDesignPoint()[i];
     Point sigmaSE(dim, 1.0);
-    IdentityMatrix CorrSE(dim);
+    CorrelationMatrix CorrSE(MatrixImplementation::identityMatrix(dim));
     Normal myImportanceSE(meanSE, sigmaSE, CorrSE);
 
     StandardEvent myStandardEvent(myEvent);
@@ -260,7 +260,7 @@ int main(int, char *[])
     for (UnsignedInteger i = 0; i < resultC.getPhysicalSpaceDesignPoint().getDimension(); ++i)
       sigmaE[i] = std::sqrt(Covariance(i, i));
 
-    IdentityMatrix CorrE(dim);
+    CorrelationMatrix CorrE(MatrixImplementation::identityMatrix(dim));
     Normal myImportanceE(meanE, sigmaE, CorrE);
 
     ImportanceSampling myIS(myEvent, Distribution(myImportanceE));

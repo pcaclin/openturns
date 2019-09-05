@@ -46,11 +46,11 @@ CovarianceMatrix::CovarianceMatrix(const MatrixImplementation & i)
 }
 
 /* Constructor with size (dim, which is the same for nbRows_ and nbColumns_ )*/
+/* CovarianceMatrix is initialized to identity matrix */
 CovarianceMatrix::CovarianceMatrix(const UnsignedInteger dim)
-  : SymmetricMatrix(dim)
+  : SymmetricMatrix(MatrixImplementation::identityMatrix(dim))
 {
-  // Initialize the correlation matrix to the identity matrix
-  for(UnsignedInteger i = 0; i < dim; ++i) operator()(i, i) = 1.0;
+  // Nothing to do
 }
 
 /* Constructor from external collection */
@@ -63,6 +63,13 @@ CovarianceMatrix::CovarianceMatrix(const UnsignedInteger dim,
 {
   // Nothing to do
 }
+
+/** Create identity matrix as CovarianceMatrix */
+CovarianceMatrix CovarianceMatrix::identityMatrix(const UnsignedInteger dimension)
+{
+  return CovarianceMatrix(MatrixImplementation::identityMatrix(dimension));
+}
+
 
 /* String converter */
 String CovarianceMatrix::__repr__() const
@@ -83,12 +90,6 @@ CovarianceMatrix CovarianceMatrix::transpose () const
 CovarianceMatrix CovarianceMatrix::operator + (const CovarianceMatrix & m) const
 {
   return Implementation((*getImplementation() + * (m.getImplementation()) ).clone());
-}
-
-/* CovarianceMatrix multiplication (must have consistent dimensions) */
-CovarianceMatrix CovarianceMatrix::operator * (const IdentityMatrix & ) const
-{
-  return *this;
 }
 
 /* Check if the matrix is SPD */

@@ -184,7 +184,7 @@ CovarianceMatrix QRMethod::getGramInverse() const
 {
   // G^{-1}=R^-1*R*^-T
   const UnsignedInteger basisSize = currentIndices_.getSize();
-  const MatrixImplementation b(*IdentityMatrix(basisSize).getImplementation());
+  const MatrixImplementation b(*Matrix::identityMatrix(basisSize).getImplementation());
   Matrix invR(r_.getImplementation()->solveLinearSystemTri(b, true, false));
   // Compute gram matrix (false --> M.M^t)
   return invR.computeGram(false);
@@ -195,7 +195,7 @@ Point QRMethod::getGramInverseDiag() const
   // G^{-1}=R^-1*R*^-T
   const UnsignedInteger dimension = r_.getNbRows();
   const UnsignedInteger basisSize = currentIndices_.getSize();
-  const MatrixImplementation b(*IdentityMatrix(dimension).getImplementation());
+  const MatrixImplementation b(*Matrix::identityMatrix(dimension).getImplementation());
   const MatrixImplementation invRT(r_.getImplementation()->solveLinearSystemTri(b, true, false, true));
 
   Point diag(dimension);
@@ -217,7 +217,7 @@ Scalar QRMethod::getGramInverseTrace() const
 {
   // G^{-1}=R^-1*R*^-T
   const UnsignedInteger dimension = r_.getNbRows();
-  const MatrixImplementation b(*IdentityMatrix(dimension).getImplementation());
+  const MatrixImplementation b(*Matrix::identityMatrix(dimension).getImplementation());
   const MatrixImplementation invRT(r_.getImplementation()->solveLinearSystemTri(b, true, false, true));
 
   Scalar traceInverse = 0.0;

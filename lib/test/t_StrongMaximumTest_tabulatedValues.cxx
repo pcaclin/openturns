@@ -57,7 +57,7 @@ int main(int, char *[])
       /* We create a normal distribution point of dimension 1 */
       Point mean(dim, 0.0);
       Point sigma(dim, 1.0);
-      IdentityMatrix R(dim);
+      CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
       Normal myDistribution(mean, sigma, R);
 
       /* We create a 'usual' RandomVector from the Distribution */
@@ -69,7 +69,7 @@ int main(int, char *[])
       /* We create a StandardEvent from this RandomVector */
       StandardEvent myStandardEvent(output, Less(), 2.0);
 
-      Normal std(Point(1, 0.0), Point(1, 1.0), IdentityMatrix(1));
+      Normal std(Point(1, 0.0), Point(1, 1.0), CorrelationMatrix(MatrixImplementation::identityMatrix(1)));
 
       Point beta(3);
       beta[0] = round(-std.computeQuantile(1e-3)[0]);

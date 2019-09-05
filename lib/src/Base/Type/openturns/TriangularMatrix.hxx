@@ -27,7 +27,6 @@
 BEGIN_NAMESPACE_OPENTURNS
 
 class SymmetricMatrix;
-class IdentityMatrix;
 class SquareMatrix;
 class Matrix;
 class HermitianMatrix;
@@ -66,6 +65,9 @@ public:
   /** Constructor with matrix implementation */
   TriangularMatrix(const MatrixImplementation & i,
                    const Bool isLower = true);
+
+  /** Create identity matrix as SymmetricMatrix */
+  static TriangularMatrix identityMatrix(const UnsignedInteger dimension);  
 
   /** Check if the internal representation is actually symmetric */
   void checkTriangularity() const;
@@ -125,9 +127,6 @@ public:
 
   /** Real SymmetricMatrix multiplications  */
   SquareMatrix operator * (const SymmetricMatrix & m) const;
-
-  /** IdentityMatrix multiplications  */
-  TriangularMatrix operator * (const IdentityMatrix & m) const;
 
   /** Multiplication with a ScalarCollection (must have consistent dimensions) */
   ScalarCollection operator * (const ScalarCollection & p) const;

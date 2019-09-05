@@ -69,7 +69,7 @@ with :math:`N>10^2`, the asymptotic nature of the Central Limit Theorem is not p
     f = ot.SymbolicFunction(['x'], ['17-exp(0.1*(x-1.0))'])
     graph = f.draw(0.0, 12.0)
 
-    dist = ot.Normal([5.0, 15.0], [1.0, 0.25], ot.IdentityMatrix(2))
+    dist = ot.Normal([5.0, 15.0], [1.0, 0.25], ot.CorrelationMatrix.identityMatrix(2))
     N = 1000
     sample = dist.getSample(N)
     sample1 = ot.Sample(0, 2)

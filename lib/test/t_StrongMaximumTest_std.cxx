@@ -63,7 +63,7 @@ int main(int, char *[])
     /* We create a normal distribution point of dimension 1 */
     Point mean(dim, 0.0);
     Point sigma(dim, 1.0);
-    IdentityMatrix R(dim);
+    CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
     Normal myDistribution(mean, sigma, R);
 
     /* We create a 'usual' RandomVector from the Distribution */

@@ -156,7 +156,7 @@ int main(int, char *[])
       meanPoint[0] = 0.5;
       Point sigma(dim, 1.0);
       sigma[0] = 2.0;
-      CorrelationMatrix R = IdentityMatrix(dim);
+      CorrelationMatrix R(MatrixImplementation::identityMatrix(dim));
       Normal distribution1(meanPoint, sigma, R);
 
       // Instanciate another distribution object

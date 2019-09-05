@@ -21,7 +21,6 @@
 #include "openturns/Matrix.hxx"
 #include "openturns/MatrixImplementation.hxx"
 #include "openturns/SymmetricMatrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/ResourceMap.hxx"
 #include "openturns/Sample.hxx"
 
@@ -79,6 +78,13 @@ Matrix::Matrix(const SymmetricMatrix & symmetric)
 {
   getImplementation()->symmetrize();
 }
+
+/** Constructor for identity matrix */
+Matrix Matrix::identityMatrix(const UnsignedInteger dimension)
+{
+  return Matrix(MatrixImplementation::identityMatrix(dimension).clone());
+}
+
 
 /* String converter */
 String Matrix::__repr__() const
@@ -197,11 +203,6 @@ Matrix Matrix::operator* (const SymmetricMatrix & m) const
   return Implementation(m.getImplementation()->symProd(*getImplementation(), 'R').clone());
 }
 
-Matrix Matrix::operator* (const IdentityMatrix & ) const
-{
-  return *this;
-}
-
 /* Multiplication with a Sample (must have consistent dimensions) */
 Sample Matrix::operator* (const Sample & sample) const
 {
@@ -268,6 +269,12 @@ Matrix Matrix::computeQR(Matrix & R,
 Bool Matrix::isEmpty() const
 {
   return getImplementation()->isEmpty() ;
+}
+
+/** Check if matrix is identity */
+Bool Matrix::isIdentity() const
+{
+  return getImplementation()->isIdentity();
 }
 
 /* Compute the associated Gram matrix */

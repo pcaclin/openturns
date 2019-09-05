@@ -21,7 +21,6 @@
 #include <cmath>
 #include "openturns/IndependentCopula.hxx"
 #include "openturns/Normal.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/NatafIndependentCopulaEvaluation.hxx"
 #include "openturns/NatafIndependentCopulaGradient.hxx"
 #include "openturns/NatafIndependentCopulaHessian.hxx"
@@ -164,7 +163,7 @@ Scalar IndependentCopula::computeSurvivalFunction(const Point & point) const
 /* Get the Kendall concordance of the distribution */
 CorrelationMatrix IndependentCopula::getKendallTau() const
 {
-  return IdentityMatrix(getDimension());
+  return MatrixImplementation::identityMatrix(getDimension());
 }
 
 /* Get the PDF gradient of the distribution */

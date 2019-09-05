@@ -46,7 +46,7 @@ try:
     sigma[0] = 2.5
     sigma[1] = 0.5
 
-    R = IdentityMatrix(dim)
+    R = CorrelationMatrix.identityMatrix(dim)
 
     myDistribution = Normal(mean, sigma, R)
 
@@ -157,7 +157,7 @@ try:
     for i in range(resultAR.getStandardSpaceDesignPoint().getDimension()):
         meanSE[i] = resultAR.getStandardSpaceDesignPoint()[i]
     sigmaSE = Point(dim, 1.0)
-    CorrSE = IdentityMatrix(dim)
+    CorrSE = CorrelationMatrix.identityMatrix(dim)
     myImportanceSE = Normal(meanSE, sigmaSE, CorrSE)
 
     myStandardEvent = StandardEvent(myEvent)

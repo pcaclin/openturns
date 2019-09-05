@@ -104,7 +104,7 @@ int main(int, char *[])
     meanPoint = Point(dim, 0.1);
     sigma = Point(dim, 1.0);
 
-    distribution = Normal(meanPoint, sigma, IdentityMatrix(dim));
+    distribution = Normal(meanPoint, sigma, CorrelationMatrix(MatrixImplementation::identityMatrix(dim)));
     fullprint << "Has independent copula? " << (distribution.hasIndependentCopula() ? "true" : "false") << std::endl;
     // Test for sampling
     oneSample = distribution.getSample( size / 10 );

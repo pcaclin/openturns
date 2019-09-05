@@ -56,6 +56,9 @@ public:
   CovarianceMatrix(const UnsignedInteger dim,
                    const ScalarCollection & elementsValues);
 
+  /** Create identity matrix as CorrelationMatrix */
+  static CovarianceMatrix identityMatrix(const UnsignedInteger dimension);  
+  
   /** String converter */
   virtual String __repr__() const;
 
@@ -65,10 +68,6 @@ public:
   /** CovarianceMatrix addition (must have the same dimensions) */
   using SymmetricMatrix::operator +;
   CovarianceMatrix operator + (const CovarianceMatrix & m) const;
-
-  /** CovarianceMatrix multiplication (must have consistent dimensions) */
-  using SymmetricMatrix::operator *;
-  CovarianceMatrix operator * (const IdentityMatrix & m) const;
 
   /** Check if the matrix is SPD */
   virtual Bool isPositiveDefinite() const;

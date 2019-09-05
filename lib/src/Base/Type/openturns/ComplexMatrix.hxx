@@ -25,7 +25,6 @@
 #include "openturns/TypedInterfaceObject.hxx"
 #include "openturns/Matrix.hxx"
 #include "openturns/SymmetricMatrix.hxx"
-#include "openturns/IdentityMatrix.hxx"
 #include "openturns/Point.hxx"
 
 BEGIN_NAMESPACE_OPENTURNS
@@ -169,9 +168,6 @@ public:
 
   /** ComplexMatrix multiplication with SymmetricMatrix argument */
   ComplexMatrix operator * (const SymmetricMatrix & m) const;
-
-  /** ComplexMatrix multiplication with IdentityMatrix argument */
-  ComplexMatrix operator * (const IdentityMatrix & m) const;
 
   /** Multiplication with a Point  */
   virtual ComplexCollection operator* (const Point & point) const;

@@ -138,7 +138,7 @@ Estimate a probability by Monte Carlo
 >>> import openturns as ot
 >>> ot.RandomGenerator.SetSeed(0)
 >>> myFunction = ot.SymbolicFunction(['E', 'F', 'L', 'I'], ['-F*L^3/(3*E*I)'])
->>> myDistribution = ot.Normal([50.0, 1.0, 10.0, 5.0], [1.0]*4, ot.IdentityMatrix(4))
+>>> myDistribution = ot.Normal([50.0, 1.0, 10.0, 5.0], [1.0]*4, ot.CorrelationMatrix.identityMatrix(4))
 >>> # We create a 'usual' RandomVector from the Distribution
 >>> vect = ot.RandomVector(myDistribution)
 >>> # We create a composite random vector
@@ -159,7 +159,7 @@ Probability estimate=0.140000
 Estimate a probability by Importance Sampling
 
 >>> ot.RandomGenerator.SetSeed(0)
->>> myImportance = ot.Normal([49.969, 1.84194, 10.4454, 4.66776], [1.0]*4, ot.IdentityMatrix(4))
+>>> myImportance = ot.Normal([49.969, 1.84194, 10.4454, 4.66776], [1.0]*4, ot.CorrelationMatrix.identityMatrix(4))
 >>> experiment = ot.ImportanceSamplingExperiment(myImportance)
 >>> myAlgo = ot.ProbabilitySimulationAlgorithm(myEvent, experiment)
 >>> myAlgo.setMaximumOuterSampling(150)
