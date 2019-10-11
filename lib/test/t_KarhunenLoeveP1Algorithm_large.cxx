@@ -2,7 +2,7 @@
 /**
  *  @brief The test file of class KarhunenLoeveP1Algorithm
  *
- *  Copyright 2005-2019 Airbus-EDF-IMACS-ONERA-Phimeca
+ *  Copyright 2005-2019 Airbus-EDF-IMACS-Phimeca
  *
  *  This library is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@
 #include "openturns/OT.hxx"
 #include "openturns/OTtestcode.hxx"
 #include <cmath>
+#include <ctime>
 
 using namespace OT;
 using namespace OT::Test;
@@ -31,9 +32,10 @@ int main(int, char *[])
   OStream fullprint(std::cout);
   setRandomGenerator();
 
+  std::clock_t c_start = std::clock();
   try
   {
-    Mesh mesh(IntervalMesher(Indices(1, 9)).build(Interval(-1.0, 1.0)));
+    Mesh mesh(IntervalMesher(Indices(1, 1000)).build(Interval(-1.0, 1.0)));
     {
       AbsoluteExponential cov1D(Point(1, 1.0));
       KarhunenLoeveP1Algorithm algo(mesh, cov1D, 1e-3);
@@ -41,15 +43,15 @@ int main(int, char *[])
       KarhunenLoeveResult result(algo.getResult());
       Point lambda(result.getEigenValues());
       ProcessSample KLModes(result.getModesAsProcessSample());
-      fullprint << "KL modes=" << KLModes << std::endl;
-      fullprint << "KL eigenvalues=" << lambda << std::endl;
+//       fullprint << "KL modes=" << KLModes << std::endl;
+//       fullprint << "KL eigenvalues=" << lambda << std::endl;
       GaussianProcess process(cov1D, KLModes.getMesh());
       Sample coefficients(result.project(process.getSample(10)));
-      fullprint << "KL coefficients=" << coefficients << std::endl;
+//       fullprint << "KL coefficients=" << coefficients << std::endl;
       Basis KLFunctions(result.getModes());
-      fullprint << "KL functions=" << KLFunctions.__str__() << std::endl;
-      fullprint << "KL lift=" << result.lift(coefficients[0]).__str__() << std::endl;
-      fullprint << "KL lift as field=" << result.liftAsField(coefficients[0]) << std::endl;
+//       fullprint << "KL functions=" << KLFunctions.__str__() << std::endl;
+//       fullprint << "KL lift=" << result.lift(coefficients[0]).__str__() << std::endl;
+//       fullprint << "KL lift as field=" << result.liftAsField(coefficients[0]) << std::endl;
     }
     {
       CorrelationMatrix R(2);
@@ -64,15 +66,15 @@ int main(int, char *[])
       KarhunenLoeveResult result(algo.getResult());
       Point lambda(result.getEigenValues());
       ProcessSample KLModes(result.getModesAsProcessSample());
-      fullprint << "KL modes=" << KLModes << std::endl;
-      fullprint << "KL eigenvalues=" << lambda << std::endl;
+//       fullprint << "KL modes=" << KLModes << std::endl;
+//       fullprint << "KL eigenvalues=" << lambda << std::endl;
       GaussianProcess process(cov2D, KLModes.getMesh());
       Sample coefficients(result.project(process.getSample(10)));
-      fullprint << "KL coefficients=" << coefficients << std::endl;
+//       fullprint << "KL coefficients=" << coefficients << std::endl;
       Basis KLFunctions(result.getModes());
-      fullprint << "KL functions=" << KLFunctions.__str__() << std::endl;
-      fullprint << "KL lift=" << result.lift(coefficients[0]).__str__() << std::endl;
-      fullprint << "KL lift as field=" << result.liftAsField(coefficients[0]) << std::endl;
+//       fullprint << "KL functions=" << KLFunctions.__str__() << std::endl;
+//       fullprint << "KL lift=" << result.lift(coefficients[0]).__str__() << std::endl;
+//       fullprint << "KL lift as field=" << result.liftAsField(coefficients[0]) << std::endl;
     }
   }
   catch (TestFailed & ex)
@@ -80,7 +82,10 @@ int main(int, char *[])
     std::cerr << ex << std::endl;
     return ExitCode::Error;
   }
+  std::clock_t c_end = std::clock();
 
+  Scalar time_elapsed_ms = 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC;
+  fullprint << "Run time: " << time_elapsed_ms << " ms" << std::endl;
 
   return ExitCode::Success;
 }

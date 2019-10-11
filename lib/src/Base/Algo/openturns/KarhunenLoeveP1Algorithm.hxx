@@ -56,7 +56,13 @@ public:
    * where C is a given covariance model, using P1 approximation
    */
   void run();
+  
+  /** Running the solver with customized number of eigen values and arnoldi vectors */
+  void runWithParameters( const Scalar nevRatio = 1.0,
+                          const Scalar ncvRatio = 1.0,
+                          const Bool writeCsv = false);
 
+  
   /** Mesh accessor */
   Mesh getMesh() const;
 

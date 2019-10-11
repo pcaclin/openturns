@@ -25,8 +25,69 @@
 #include "openturns/P1LagrangeEvaluation.hxx"
 #include "openturns/PiecewiseLinearEvaluation.hxx"
 #include "openturns/PersistentObjectFactory.hxx"
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+#include "openturns/SpecFunc.hxx"
+#include <arpack/arpack.hpp>
+#include <algorithm>
 
 BEGIN_NAMESPACE_OPENTURNS
+
+typedef Collection<Complex> ComplexCollection;
+typedef Eigen::Triplet<Scalar>  Triplet;
+typedef std::vector<Triplet>    TripletVector;
+
+/** Defining class KLGenMatProd **/
+class KLGenMatProd
+{
+  public:
+    
+  KLGenMatProd( const CovarianceMatrix & C,
+                const Eigen::SparseMatrix<Scalar> & G)
+  : C_(C)
+  , G_(G)
+  , rows_(C_.getNbRows())
+  , cols_(C_.getNbColumns())
+  {    
+    // Nothing to do
+  }
+    
+  int rows()
+  {
+    return rows_;
+  }
+  
+  int cols()
+  {
+    return cols_;
+  }
+  
+  void av(const Scalar * x_in, Scalar * y_out)
+  {
+    // Convert double array to Eigen::VectorXd
+    Eigen::VectorXd v(rows_);
+    std::copy(x_in, x_in+rows_, v.data());
+    
+    // Compute product with sparse matrix G       
+    Eigen::VectorXd w(G_*v);
+
+    // Compute product with dense matrix C
+    Point OTw(rows_);
+    std::copy(w.data(), w.data()+rows_, OTw.begin());
+    
+    Point OTv(C_*OTw);
+        
+    // Output double array
+    std::copy(OTv.begin(), OTv.end(), y_out);
+  }
+    
+  private:
+    CovarianceMatrix C_;
+    Eigen::SparseMatrix<Scalar> G_;
+    int rows_;
+    int cols_;
+};
+
 
 /**
  * @class KarhunenLoeveP1Algorithm
@@ -60,6 +121,148 @@ KarhunenLoeveP1Algorithm * KarhunenLoeveP1Algorithm::clone() const
   return new KarhunenLoeveP1Algorithm( *this );
 }
 
+/* Compute P1 gram as a vector of Eigen::Triplet<Scalar> */
+TripletVector computeP1GramAsTriplets(const Mesh & mesh)
+{
+  // If no simplex, the P1 gram matrix is null
+  if (mesh.getSimplicesNumber() == 0)
+    return std::vector<Eigen::Triplet<Scalar>>();
+  
+  const UnsignedInteger simplexSize = mesh.getVertices().getDimension() + 1;
+  
+  SquareMatrix elementaryGram(simplexSize, Point(simplexSize * simplexSize, 1.0 / SpecFunc::Gamma(simplexSize + 2.0)));
+  for (UnsignedInteger i = 0; i < simplexSize; ++i) 
+    elementaryGram(i, i) *= 2.0;
+  
+  const UnsignedInteger verticesSize = mesh.getVerticesNumber();
+  const UnsignedInteger simplicesSize = mesh.getSimplicesNumber();
+  const Point simplexVolume(mesh.computeSimplicesVolume());
+  
+  Eigen::SparseMatrix<Scalar> gram(verticesSize,verticesSize);
+  typedef Eigen::Triplet<Scalar> Triplet;
+  std::vector<Triplet> triplets;
+
+  for (UnsignedInteger i = 0; i < simplicesSize; ++i)
+  {
+    const Indices simplex(mesh.getSimplex(i));
+    const Scalar delta = simplexVolume[i];
+        
+    if (delta != 0)
+      for (UnsignedInteger j = 0; j < simplexSize; ++j)
+        for (UnsignedInteger k = 0; k < simplexSize; ++k)
+          triplets.push_back(Triplet(simplex[j], simplex[k], delta * elementaryGram(j,k)));
+  } // Loop over simplices
+  
+  
+// \A CORRIGER
+  
+  return triplets;
+}
+
+
+/* Call to arpack routines to compute EV */
+void computeEVWithArpack(const int nev,
+                         const int ncv,
+                         KLGenMatProd & op,
+                         Point & eigenvalues,
+                         Matrix & eigenvectors)
+{    
+  int const N = op.rows();
+  int const ldv = N;
+  int const ldz = N + 1;
+  int const lworkl = 3 * (ncv * ncv) + 6 * ncv;
+
+  Scalar const tol = 1e-3;    // TODO: add ResourceMap item?
+  Scalar const sigmar(0.0);
+  Scalar const sigmai(0.0);
+  
+  bool const rvec = true;
+
+  std::vector<Scalar> resid(N);
+  std::vector<Scalar> V(ncv * N);
+  std::vector<Scalar> workd(3 * N);
+  std::vector<Scalar> workl(lworkl);
+  std::vector<Scalar> dr(nev + 1);
+  std::vector<Scalar> di(nev + 1);
+  std::vector<Scalar> z((N + 1) * (nev + 1));
+  std::vector<Scalar> rwork(ncv);
+
+  std::array<int, 11> iparam{};
+  iparam[0] = 1;
+  iparam[2] = 10 * N;
+  iparam[3] = 1;
+  iparam[4] = 0;  // number of ev found by arpack.
+  iparam[6] = 1;
+
+  std::array<int, 14> ipntr{};
+
+  int info = 0, ido = 0;
+
+  while (ido != 99) 
+  {
+    arpack::naupd(ido,
+                  arpack::bmat::identity,
+                  N,
+                  arpack::which::largest_magnitude,
+                  nev,
+                  tol,
+                  resid.data(),
+                  ncv,
+                  V.data(),
+                  ldv,
+                  iparam.data(),
+                  ipntr.data(),
+                  workd.data(),
+                  workl.data(),
+                  lworkl,
+                  info);
+    
+    op.av(&(workd[ipntr[0] - 1]),
+          &(workd[ipntr[1] - 1]));
+  }
+  
+  // check number of ev found by arpack.
+  if (    iparam[4] < nev     // arpack may succeed to compute more EV than expected
+      ||  info != 0)
+    throw InternalException(HERE) << "Error inside ARPACK routines: iparam[4]=" << iparam[4] << ", nev=" << nev << ", ncv=" << ncv << ", info=" << info;
+
+  std::vector<Scalar> workev(3*ncv);
+  std::vector<int> select(ncv);
+
+  arpack::neupd(rvec,
+                arpack::howmny::ritz_vectors,
+                select.data(),
+                dr.data(),
+                di.data(),
+                z.data(),
+                ldz,
+                sigmar,
+                sigmai,
+                workev.data(),
+                arpack::bmat::identity,
+                N,
+                arpack::which::largest_magnitude,
+                nev,
+                tol,
+                resid.data(),
+                ncv,
+                V.data(),
+                ldv, 
+                iparam.data(),
+                ipntr.data(),
+                workd.data(),
+                workl.data(),
+                lworkl,
+                info);
+
+  // Post-process eigenvalues and eigenvectors
+  std::copy(dr.data(),dr.data()+nev,eigenvalues.begin());
+  
+  Collection<Scalar> eigenvectorsData(N*(nev+1));
+  std::copy(z.data(), z.data()+N*(nev+1), eigenvectorsData.begin());
+  eigenvectors = Matrix(N, nev+1,eigenvectorsData);
+}
+
 /* Here we discretize the following Fredholm problem:
    \int_{\Omega}C(s,t)\phi_n(s)ds=\lambda_n\phi_n(t)
    using a P1 approximation of C and \phi_n:
@@ -80,62 +283,97 @@ KarhunenLoeveP1Algorithm * KarhunenLoeveP1Algorithm::clone() const
    K_ij = \int_{\Omega}\theta_i(s)\theta_j(s)ds I
    with I the dxd identity matrix
 */
+
 void KarhunenLoeveP1Algorithm::run()
 {
+  runWithParameters(1.0, 1.0);
+}
+
+void KarhunenLoeveP1Algorithm::runWithParameters( const Scalar nevRatio,
+                                                  const Scalar ncvRatio,
+                                                  const Bool writeCsv)
+{ 
   // Compute the gram of the mesh
   LOGINFO("Build the Gram matrix");
-  CovarianceMatrix gram(mesh_.computeP1Gram());
-  const UnsignedInteger numVertices = mesh_.getVerticesNumber();
-  if (!(gram.getDimension() == numVertices)) throw InternalException(HERE) << "Error: the P1 Gram matrix of the mesh has a dimension=" << gram.getDimension() << " different from the number of vertices=" << numVertices;
+  TripletVector gram(computeP1GramAsTriplets(mesh_));
+  
+  const UnsignedInteger numVertices = mesh_.getVerticesNumber();    
   const Scalar epsilon = ResourceMap::GetAsScalar("KarhunenLoeveP1Algorithm-RegularizationFactor");
+  
   if (epsilon > 0.0)
-    for (UnsignedInteger i = 0; i < gram.getDimension(); ++i) gram(i, i) += epsilon;
+    for (UnsignedInteger i = 0; i < mesh_.getVerticesNumber(); ++i)
+      gram.push_back(Triplet(i,i,epsilon));
+  
   // Extend the Gram matrix of the mesh
   const UnsignedInteger dimension = covariance_.getOutputDimension();
   const UnsignedInteger augmentedDimension = dimension * numVertices;
-  CovarianceMatrix G;
-  if (dimension == 1) G = gram;
+  
+  const UnsignedInteger nev = std::min(augmentedDimension*nevRatio + 1, augmentedDimension*1.0-2);
+  const UnsignedInteger ncv = std::min(std::max(nev + 2, static_cast<UnsignedInteger>(nev*ncvRatio)),
+                                       augmentedDimension);
+  
+  TripletVector tripletList;
+  
+  if (dimension == 1)
+    tripletList = gram;
   else
   {
-    G = CovarianceMatrix(augmentedDimension);
-    for (UnsignedInteger i = 0; i < numVertices; ++i)
+    for (UnsignedInteger p = 0; p < gram.size(); ++p)
     {
-      for (UnsignedInteger j = 0; j <= i; ++j)
-      {
-        const Scalar gij = gram(i, j);
-        for (UnsignedInteger k = 0; k < dimension; ++k)
-          G(i * dimension + k, j * dimension + k) = gij;
-      } // Loop over j
-    } // Loop over i
+      Triplet g(gram[p]);
+      for (UnsignedInteger k = 0; k < dimension; ++k)
+        tripletList.push_back(Triplet(g.row()*dimension+k, g.col()*dimension+k, g.value()));
+    }
   }
+  
+  Eigen::SparseMatrix<Scalar> GSparse(augmentedDimension, augmentedDimension);
+  GSparse.setFromTriplets(tripletList.begin(), tripletList.end());
+  
   // Discretize the covariance model
   LOGINFO("Discretize the covariance model");
   CovarianceMatrix C(covariance_.discretize(mesh_.getVertices()));
-  LOGINFO("Discretize the Fredholm equation");
-  SquareMatrix M((C * G).getImplementation());
+
   LOGINFO("Solve the eigenvalue problem");
-  SquareComplexMatrix eigenVectorsComplex;
-  SquareMatrix::ComplexCollection eigenValuesComplex(M.computeEV(eigenVectorsComplex, false));
-  LOGINFO("Post-process the eigenvalue problem");
-  Collection< std::pair<Scalar, UnsignedInteger> > eigenPairs(augmentedDimension);
-  for (UnsignedInteger i = 0; i < augmentedDimension; ++i)
-    eigenPairs[i] = std::pair<Scalar, UnsignedInteger>(-eigenValuesComplex[i].real(), i);
-  // Sort the eigenvalues in decreasing order
-  std::sort(eigenPairs.begin(), eigenPairs.end());
-  Point eigenValues(augmentedDimension);
-  Scalar cumulatedVariance = 0.0;
-  for (UnsignedInteger i = 0; i < augmentedDimension; ++i)
-  {
-    eigenValues[i] = -eigenPairs[i].first;
-    cumulatedVariance += eigenValues[i];
-  }
+  Matrix eigenVectors(augmentedDimension,nev);
+  Point eigenValues(nev);
+  
+  KLGenMatProd op(C,GSparse);
+  
+  computeEVWithArpack(nev,
+                      ncv,
+                      op,
+                      eigenValues,
+                      eigenVectors);
+      
+  // Computing computed variance (i.e sum of computed eigenvalues)
+  LOGINFO("Post-process the eigenvalue problem");  
+  Scalar computedVariance = 0.0;
+  for (UnsignedInteger k=0; k<eigenValues.getSize(); ++k)
+    computedVariance += eigenValues[k];
+      
+  // Computing cumulated variance (i.e. sum of all eigenvalues)
+  SquareMatrix G(augmentedDimension);
+  for (UnsignedInteger k=0; k<tripletList.size(); ++k)
+    G(tripletList[k].row(), tripletList[k].col()) += tripletList[k].value();
+
+  Scalar cumulatedVariance = (C*G).computeTrace();
+   
   LOGDEBUG(OSS(false) << "eigenValues=" << eigenValues);
+  
+  // Applying cut-off on spectrum
   LOGINFO("Extract the relevant eigenpairs");
-  // Start at 0 if the given threshold is large (eg greater than 1)
+  
   UnsignedInteger K = 0;
-  // Find the cut-off in the eigenvalues
-  while ((K < eigenValues.getSize()) && (eigenValues[K] >= threshold_ * cumulatedVariance)) ++K;
+  
+  Scalar selectedVariance = 0.0;
+  while ((K < eigenValues.getSize()) && (eigenValues[K] >= threshold_ * cumulatedVariance)) 
+  {
+    selectedVariance += eigenValues[K];
+    ++K;
+  }
+  
   LOGINFO(OSS() << "Selected " << K << " eigenvalues");
+  
   // Reduce and rescale the eigenvectors
   MatrixImplementation projection(K, augmentedDimension);
   Point selectedEV(K);
@@ -153,10 +391,16 @@ void KarhunenLoeveP1Algorithm::run()
   for (UnsignedInteger k = 0; k < K; ++k)
   {
     selectedEV[k] = eigenValues[k];
-    const UnsignedInteger initialColumn = eigenPairs[k].second;
     for (UnsignedInteger i = 0; i < augmentedDimension; ++i)
-      a[i] = eigenVectorsComplex(i, initialColumn).real();
-    const Point Ga(G * a);
+      a[i] = eigenVectors(i, k);
+    
+    Eigen::VectorXd aSparse(augmentedDimension);
+    std::copy(a.begin(), a.end(), aSparse.data());
+    
+    const Eigen::VectorXd GaSparse(GSparse * aSparse);
+    Point Ga(augmentedDimension);
+    std::copy(GaSparse.data(), GaSparse.data()+GaSparse.size(), Ga.begin());
+    
     const Scalar norm = std::sqrt(a.dot(Ga));
     const Scalar factor = a[0] < 0.0 ? -1.0 / norm : 1.0 / norm;
     // Store the eigen modes in two forms
@@ -178,6 +422,17 @@ void KarhunenLoeveP1Algorithm::run()
     for(UnsignedInteger i = 0; i < augmentedDimension; ++i)
       projection(k, i) = b[i];
   }
+  
+  if (writeCsv)
+    std::cout << nev                                  << ","
+              << ncv                                  << ","
+              << K                                    << ","
+              << cumulatedVariance                    << ","
+              << computedVariance                     << ","
+              << selectedVariance                     << ","
+              << computedVariance / cumulatedVariance << ","
+              << selectedVariance / cumulatedVariance << "," << std::flush;
+     
   result_ = KarhunenLoeveResultImplementation(covariance_, threshold_, selectedEV, modes, modesAsProcessSample, projection);
 }
 

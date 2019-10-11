@@ -30,6 +30,7 @@ option (USE_DLIB                     "Use dlib for additional optimization algor
 option (USE_OPTPP                    "Use OPT++ for additional optimization algorithms"                      ON)
 option (USE_COTIRE                   "Use cotire for unity builds"                                           OFF)
 option (USE_BONMIN                   "Use Bonmin for MINLP problems"                                         ON)
+option (USE_ARPACK                   "Use ARPACK for eigenvalues computation"                                ON)
 
 option (BUILD_PYTHON                 "Build the python module for the library"                               ON)
 option (BUILD_SHARED_LIBS            "Build shared libraries"                                                ON)
@@ -145,6 +146,17 @@ if (NOT DEFINED LAPACK_LIBRARIES)
   endif ()
 endif ()
 list (APPEND OPENTURNS_PRIVATE_LIBRARIES ${LAPACK_LIBRARIES})
+
+
+find_package (arpack-ng REQUIRED)
+if (arpack-ng_FOUND)
+  set (OPENTURNS_HAVE_ARPACK TRUE)
+  message (STATUS "Found arpack-ng: ${arpack-ng_DIR}")
+  list (APPEND OPENTURNS_PRIVATE_LIBRARIES ${arpack_ng_LIBRARIES})
+  list (APPEND OPENTURNS_PRIVATE_INCLUDE_DIRS ${arpack_ng_INCLUDE_DIRS})
+endif()
+
+message ("###  OPENTURNS_PRIVATE_LIBRARIES = " ${OPENTURNS_PRIVATE_LIBRARIES})
 
 
 if (USE_BISON)

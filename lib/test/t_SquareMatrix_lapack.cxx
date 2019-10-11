@@ -81,6 +81,32 @@ int main(int, char *[])
     value = matrix2.computeDeterminant();
     fullprint << "det=" << value << std::endl;
 
+    
+    // Determine reference EV for comparison LAPACK vs. ARPACK
+    SquareMatrix matrix3(4);
+      matrix3(0, 0) =  1.0;
+      matrix3(1, 0) =  2.0;
+      matrix3(2, 0) =  3.0;
+      matrix3(3, 0) =  4.0;
+      matrix3(0, 1) =  5.0;
+      matrix3(1, 1) =  6.0;
+      matrix3(2, 1) =  7.0;
+      matrix3(3, 1) =  8.0;
+      matrix3(0, 2) =  9.0;
+      matrix3(1, 2) = 10.0;
+      matrix3(2, 2) = 11.0;
+      matrix3(3, 2) = 12.0;
+      matrix3(0, 3) = 13.0;
+      matrix3(1, 3) = 14.0;
+      matrix3(2, 3) = 15.0;
+      matrix3(3, 3) = 16.0;
+
+
+    fullprint << "matrix3=\n" << matrix3.__str__() << std::endl;
+    
+    Collection<Complex> ev3(4);
+    ev3 = matrix3.computeEigenValues();
+    fullprint << "ev3 = " << ev3 << std::endl;
   }
   catch (TestFailed & ex)
   {
