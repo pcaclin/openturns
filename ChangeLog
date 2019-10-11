@@ -5,6 +5,7 @@
 === Library ===
 
 ==== Major changes ====
+ * New EV solvers for KarhunenLoeveP1Algorithm (ARPACK, Spectra), with sparse matrix and HMatrix support
 
 ==== New classes ====
 
