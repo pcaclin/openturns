@@ -25,11 +25,11 @@
 #include "openturns/P1LagrangeEvaluation.hxx"
 #include "openturns/PiecewiseLinearEvaluation.hxx"
 #include "openturns/PersistentObjectFactory.hxx"
-#include <Eigen/Core>
-#include <Eigen/SparseCore>
 #include "openturns/SpecFunc.hxx"
-#include <arpack/arpack.hpp>
+#include "openturns/SparseMatrix.hxx"
 #include <algorithm>
+#include <arpack.hpp>
+
 
 BEGIN_NAMESPACE_OPENTURNS
 
@@ -37,13 +37,16 @@ typedef Collection<Complex> ComplexCollection;
 typedef Eigen::Triplet<Scalar>  Triplet;
 typedef std::vector<Triplet>    TripletVector;
 
+
+// Nothing
+
 /** Defining class KLGenMatProd **/
 class KLGenMatProd
 {
   public:
     
   KLGenMatProd( const CovarianceMatrix & C,
-                const Eigen::SparseMatrix<Scalar> & G)
+                const SparseMatrix & G)
   : C_(C)
   , G_(G)
   , rows_(C_.getNbRows())
@@ -83,7 +86,7 @@ class KLGenMatProd
     
   private:
     CovarianceMatrix C_;
-    Eigen::SparseMatrix<Scalar> G_;
+    SparseMatrix G_;
     int rows_;
     int cols_;
 };
@@ -134,11 +137,9 @@ TripletVector computeP1GramAsTriplets(const Mesh & mesh)
   for (UnsignedInteger i = 0; i < simplexSize; ++i) 
     elementaryGram(i, i) *= 2.0;
   
-  const UnsignedInteger verticesSize = mesh.getVerticesNumber();
   const UnsignedInteger simplicesSize = mesh.getSimplicesNumber();
   const Point simplexVolume(mesh.computeSimplicesVolume());
   
-  Eigen::SparseMatrix<Scalar> gram(verticesSize,verticesSize);
   typedef Eigen::Triplet<Scalar> Triplet;
   std::vector<Triplet> triplets;
 
@@ -152,9 +153,6 @@ TripletVector computeP1GramAsTriplets(const Mesh & mesh)
         for (UnsignedInteger k = 0; k < simplexSize; ++k)
           triplets.push_back(Triplet(simplex[j], simplex[k], delta * elementaryGram(j,k)));
   } // Loop over simplices
-  
-  
-// \A CORRIGER
   
   return triplets;
 }
@@ -254,13 +252,16 @@ void computeEVWithArpack(const int nev,
                 workl.data(),
                 lworkl,
                 info);
-
+  
   // Post-process eigenvalues and eigenvectors
   std::copy(dr.data(),dr.data()+nev,eigenvalues.begin());
   
-  Collection<Scalar> eigenvectorsData(N*(nev+1));
-  std::copy(z.data(), z.data()+N*(nev+1), eigenvectorsData.begin());
-  eigenvectors = Matrix(N, nev+1,eigenvectorsData);
+  Collection<Scalar> eigenvectorsData((N+1)*(nev+1));
+  
+  for (int i=0; i<nev; ++i)
+    std::copy(z.data()+i*(N+1), z.data()+i*(N+1)+N, eigenvectorsData.begin()+i*N);
+  
+  eigenvectors = Matrix(N, nev,eigenvectorsData);
 }
 
 /* Here we discretize the following Fredholm problem:
@@ -326,7 +327,7 @@ void KarhunenLoeveP1Algorithm::runWithParameters( const Scalar nevRatio,
     }
   }
   
-  Eigen::SparseMatrix<Scalar> GSparse(augmentedDimension, augmentedDimension);
+  SparseMatrix GSparse(augmentedDimension, augmentedDimension);
   GSparse.setFromTriplets(tripletList.begin(), tripletList.end());
   
   // Discretize the covariance model
@@ -344,7 +345,7 @@ void KarhunenLoeveP1Algorithm::runWithParameters( const Scalar nevRatio,
                       op,
                       eigenValues,
                       eigenVectors);
-      
+        
   // Computing computed variance (i.e sum of computed eigenvalues)
   LOGINFO("Post-process the eigenvalue problem");  
   Scalar computedVariance = 0.0;

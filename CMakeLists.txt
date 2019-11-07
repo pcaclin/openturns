@@ -156,8 +156,6 @@ if (arpack-ng_FOUND)
   list (APPEND OPENTURNS_PRIVATE_INCLUDE_DIRS ${arpack_ng_INCLUDE_DIRS})
 endif()
 
-message ("###  OPENTURNS_PRIVATE_LIBRARIES = " ${OPENTURNS_PRIVATE_LIBRARIES})
-
 
 if (USE_BISON)
   find_package (BISON 2.4)
