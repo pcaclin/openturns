@@ -24,8 +24,6 @@
 #define OPENTURNS_SPARSEMATRIX_HXX
 
 #include "openturns/Matrix.hxx"
-#include <Eigen/Core>
-#include <Eigen/SparseCore>
 
 BEGIN_NAMESPACE_OPENTURNS
 
@@ -34,7 +32,7 @@ BEGIN_NAMESPACE_OPENTURNS
  */
 
 class OT_API SparseMatrix
-  : public Eigen::SparseMatrix<Scalar>
+  : public PersistentObject
 {
 
   CLASSNAME
@@ -47,22 +45,40 @@ public:
   /** Default constructor with size */
   SparseMatrix( const UnsignedInteger nbRows,
                 const UnsignedInteger nbCols);
+  
+  /** Constructor from OT::Matrix */
+  SparseMatrix(const Matrix & m);
+
+  /** Constructor from implementation */
+  SparseMatrix(void * impl);
 
   /** Virtual copy constructor */
   virtual SparseMatrix * clone() const;
+
+  /** Read-only accessor to values */
+  Scalar operator()(const UnsignedInteger i, const UnsignedInteger j) const;
+
+  /** Filling matrix from coordinates and value */
+  Scalar & operator()(const UnsignedInteger i, const UnsignedInteger j);
+  
+  /** Multiplication by a vector */
+  Point operator *(const Point & rhs) const;
 
   /** Get the dimensions of the matrix */
   /** Number of rows */
   UnsignedInteger getNbRows() const;
   /** Number of columns */
   UnsignedInteger getNbColumns() const;
+  
+  /** Get the number of non-zeros elements */
+  UnsignedInteger getNbNonZeros() const;
 
   /** Matrix transpose */
   SparseMatrix transpose() const;
 
   /** Sparse <> dense conversions */
-  Matrix asDenseMatrix();
-  
+  Matrix asDenseMatrix() const;
+
 //   /** String converter */
 //   virtual String __repr__() const;
 // 
@@ -74,7 +90,10 @@ public:
 // 
 //   /** Method load() reloads the object from the StorageManager */
 //   virtual void load(Advocate & adv);
-
+  
+private:
+  
+  void * impl_;
 } ; /* class SparseMatrix */
 
 END_NAMESPACE_OPENTURNS

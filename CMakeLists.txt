@@ -31,6 +31,7 @@ option (USE_OPTPP                    "Use OPT++ for additional optimization algo
 option (USE_COTIRE                   "Use cotire for unity builds"                                           OFF)
 option (USE_BONMIN                   "Use Bonmin for MINLP problems"                                         ON)
 option (USE_ARPACK                   "Use ARPACK for eigenvalues computation"                                ON)
+option (USE_EIGEN                    "Use Eigen for sparse matrices storage"                                 ON)
 
 option (BUILD_PYTHON                 "Build the python module for the library"                               ON)
 option (BUILD_SHARED_LIBS            "Build shared libraries"                                                ON)
@@ -148,7 +149,7 @@ endif ()
 list (APPEND OPENTURNS_PRIVATE_LIBRARIES ${LAPACK_LIBRARIES})
 
 
-find_package (arpack-ng REQUIRED)
+find_package (arpack-ng)
 if (arpack-ng_FOUND)
   set (OPENTURNS_HAVE_ARPACK TRUE)
   message (STATUS "Found arpack-ng: ${arpack-ng_DIR}")
@@ -156,6 +157,12 @@ if (arpack-ng_FOUND)
   list (APPEND OPENTURNS_PRIVATE_INCLUDE_DIRS ${arpack_ng_INCLUDE_DIRS})
 endif()
 
+find_package (Eigen3)
+if (Eigen3_FOUND)
+  set (OPENTURNS_HAVE_EIGEN TRUE)
+  message (STATUS "Found Eigen3: ${Eigen3_DIR}")
+  list (APPEND OPENTURNS_PRIVATE_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIRS})
+endif()
 
 if (USE_BISON)
   find_package (BISON 2.4)

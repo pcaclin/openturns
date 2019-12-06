@@ -1,0 +1,72 @@
+# TESTING CONFIGURATION: covarianceMatrixStorage=LAPACK, eigenValuesSolver=LAPACK, dimension=1D
+  - Computation successfully completed, eigenValues=[1.15052,0.385929,0.150245,0.0723722,0.0400667,0.0242866,0.015809,0.0111225,0.00872099,0.00808557]#10
+  => Configuration passed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=LAPACK, eigenValuesSolver=LAPACK, dimension=2D
+  - Computation successfully completed, eigenValues=[4.95043,1.66056,0.802171,0.64647,0.311402,0.269079,0.172398,0.104754,0.1045,0.0680227,0.0504597,0.0478575,0.0375245,0.0347904,0.0279355,0.0169332,0.0110224,0.00775486,0.00608049]#19
+  => Configuration passed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=LAPACK, eigenValuesSolver=ARPACK, dimension=1D
+  - Computation successfully completed, eigenValues=[1.15052,0.385929,0.150245,0.0723722,0.0400667,0.0242866,0.015809,0.0111225]
+  => Configuration passed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=LAPACK, eigenValuesSolver=ARPACK, dimension=2D
+  - Computation successfully completed, eigenValues=[4.95043,1.66056,0.802171,0.64647,0.311402,0.269079,0.172398,0.104754,0.1045,0.0680227,0.0504597,0.0478575,0.0375245,0.0347904,0.0279355,0.0169332,0.0110224,0.00775486]#18
+  => Configuration passed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=LAPACK, eigenValuesSolver=DUMMY_EV_SOLVER, dimension=1D
+  - InternalException : unknown EV solver: DUMMY_EV_SOLVER
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=LAPACK, eigenValuesSolver=DUMMY_EV_SOLVER, dimension=2D
+  - InternalException : unknown EV solver: DUMMY_EV_SOLVER
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=HMAT, eigenValuesSolver=LAPACK, dimension=1D
+  - InternalException : LAPACK cannot solve EV problem based on HMAT matrix storage
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=HMAT, eigenValuesSolver=LAPACK, dimension=2D
+  - InternalException : LAPACK cannot solve EV problem based on HMAT matrix storage
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=HMAT, eigenValuesSolver=ARPACK, dimension=1D
+  - Computation successfully completed, eigenValues=[1.15052,0.385929,0.150245,0.0723722,0.0400667,0.0242866,0.0111225,0.015809]
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=HMAT, eigenValuesSolver=ARPACK, dimension=2D
+  - Computation successfully completed, eigenValues=[4.95043,1.66056,0.802171,0.64647,0.311402,0.269079,0.172398,0.104754,0.1045,0.0680227,0.0504597,0.0478575,0.0375245,0.0347904,0.0279355,0.0169332,0.0110224,0.00775486]#18
+  => Configuration passed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=HMAT, eigenValuesSolver=DUMMY_EV_SOLVER, dimension=1D
+  - InternalException : unknown EV solver: DUMMY_EV_SOLVER
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=HMAT, eigenValuesSolver=DUMMY_EV_SOLVER, dimension=2D
+  - InternalException : unknown EV solver: DUMMY_EV_SOLVER
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=DUMMY_STORAGE_FORMAT, eigenValuesSolver=LAPACK, dimension=1D
+  - InternalException : unknown covariance matrix storage format: DUMMY_STORAGE_FORMAT
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=DUMMY_STORAGE_FORMAT, eigenValuesSolver=LAPACK, dimension=2D
+  - InternalException : unknown covariance matrix storage format: DUMMY_STORAGE_FORMAT
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=DUMMY_STORAGE_FORMAT, eigenValuesSolver=ARPACK, dimension=1D
+  - InternalException : unknown covariance matrix storage format: DUMMY_STORAGE_FORMAT
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=DUMMY_STORAGE_FORMAT, eigenValuesSolver=ARPACK, dimension=2D
+  - InternalException : unknown covariance matrix storage format: DUMMY_STORAGE_FORMAT
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=DUMMY_STORAGE_FORMAT, eigenValuesSolver=DUMMY_EV_SOLVER, dimension=1D
+  - InternalException : unknown EV solver: DUMMY_EV_SOLVER
+  => Configuration failed
+
+# TESTING CONFIGURATION: covarianceMatrixStorage=DUMMY_STORAGE_FORMAT, eigenValuesSolver=DUMMY_EV_SOLVER, dimension=2D
+  - InternalException : unknown EV solver: DUMMY_EV_SOLVER
+  => Configuration failed
+

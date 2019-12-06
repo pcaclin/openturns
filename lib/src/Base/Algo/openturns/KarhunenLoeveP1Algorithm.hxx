@@ -38,14 +38,15 @@ class OT_API KarhunenLoeveP1Algorithm
   CLASSNAME
 
 public:
-
+  
   /** Default constructor without parameters */
   KarhunenLoeveP1Algorithm();
 
-  /** Default constructor without parameters */
-  KarhunenLoeveP1Algorithm(const Mesh & mesh,
-                           const CovarianceModel & covariance,
-                           const Scalar threshold = 0.0);
+  /** Constructor with parameters */
+  KarhunenLoeveP1Algorithm( const Mesh & mesh,
+                            const CovarianceModel & covariance,
+                            const Scalar threshold = 0.0
+                          );
 
   /** Virtual copy constructor */
   virtual KarhunenLoeveP1Algorithm * clone() const;
@@ -57,15 +58,9 @@ public:
    */
   void run();
   
-  /** Running the solver with customized number of eigen values and arnoldi vectors */
-  void runWithParameters( const Scalar nevRatio = 1.0,
-                          const Scalar ncvRatio = 1.0,
-                          const Bool writeCsv = false);
-
-  
   /** Mesh accessor */
   Mesh getMesh() const;
-
+  
   /** String converter */
   virtual String __repr__() const;
 
