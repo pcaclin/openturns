@@ -111,6 +111,7 @@ String KarhunenLoeveAlgorithmImplementation::__repr__() const
   return OSS(true) << "class=" << getClassName()
          << " covariance model=" << covariance_
          << " threshold=" << threshold_
+         << " nbModes=" << nbModes_
          << " result=" << result_;
 }
 
@@ -125,6 +126,7 @@ void KarhunenLoeveAlgorithmImplementation::save(Advocate & adv) const
   PersistentObject::save(adv);
   adv.saveAttribute("covariance_", covariance_);
   adv.saveAttribute("threshold_", threshold_);
+  adv.saveAttribute("nbModes_", nbModes_);
   adv.saveAttribute("result_", result_);
 }
 
@@ -135,6 +137,7 @@ void KarhunenLoeveAlgorithmImplementation::load(Advocate & adv)
   PersistentObject::load(adv);
   adv.loadAttribute("covariance_", covariance_);
   adv.loadAttribute("threshold_", threshold_);
+  adv.loadAttribute("nbModes_", nbModes_);
   adv.loadAttribute("result_", result_);
 }
 
